@@ -78,6 +78,9 @@ from tools.extended_apps import (
 from tools.window_management import (
     snap_window_left,
     snap_window_right,
+    snap_side_by_side,
+    snap_to_display,
+    get_display_bounds,
     maximize_window,
     center_window,
     resize_window,
@@ -1104,6 +1107,43 @@ ADVANCED_TOOLS = {
             "required": ["app_name"]
         },
         "function": snap_window_right
+    },
+    
+    "snap_side_by_side": {
+        "description": "Snap two apps side by side on screen - one on left half, one on right half. Use this when user wants two apps arranged together simultaneously. Supports multiple displays.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "left_app": {"type": "string", "description": "Application to place on left half"},
+                "right_app": {"type": "string", "description": "Application to place on right half"},
+                "display": {"type": "integer", "description": "Display index: 0=main screen, 1=second monitor/external display, 2=third display"}
+            },
+            "required": ["left_app", "right_app"]
+        },
+        "function": snap_side_by_side
+    },
+    
+    "snap_to_display": {
+        "description": "Snap window to specific display/monitor (for multi-monitor setups). Can position left, right, or full screen on chosen display.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "app_name": {"type": "string", "description": "Application name"},
+                "display": {"type": "integer", "description": "Display index: 0=main MacBook screen, 1=external monitor, 2=second external"},
+                "position": {"type": "string", "enum": ["left", "right", "full"], "description": "Position on that display"}
+            },
+            "required": ["app_name"]
+        },
+        "function": snap_to_display
+    },
+    
+    "get_display_bounds": {
+        "description": "Get information about all connected displays/monitors. Useful for multi-monitor setups.",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        },
+        "function": get_display_bounds
     },
     
     "maximize_window": {
