@@ -1761,14 +1761,19 @@ ADVANCED_TOOLS = {
     },
     
     "mouse_move": {
-        "description": "Move mouse to position (requires cliclick)",
+        "description": "Move mouse to position (resolution-independent). Can use named positions like 'center', 'top-left', etc. or specific coordinates. No parameters moves to center. Requires cliclick.",
         "parameters": {
             "type": "object",
             "properties": {
-                "x": {"type": "integer", "description": "X coordinate"},
-                "y": {"type": "integer", "description": "Y coordinate"}
+                "x": {"type": "integer", "description": "X coordinate (optional if using position)"},
+                "y": {"type": "integer", "description": "Y coordinate (optional if using position)"},
+                "position": {
+                    "type": "string", 
+                    "enum": ["center", "top-left", "top-right", "bottom-left", "bottom-right", "top-center", "bottom-center", "left-center", "right-center"],
+                    "description": "Named position on screen (optional, overrides x/y)"
+                }
             },
-            "required": ["x", "y"]
+            "required": []
         },
         "function": mouse_move
     },

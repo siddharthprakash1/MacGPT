@@ -4,6 +4,34 @@ Type text, press keys, click, move mouse
 """
 
 import subprocess
+from typing import Tuple
+
+
+def get_screen_size() -> Tuple[int, int]:
+    """Get current screen dimensions"""
+    try:
+        script = '''
+        tell application "Finder"
+            set desktopBounds to bounds of window of desktop
+            return desktopBounds
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], 
+                              capture_output=True, text=True, timeout=3)
+        
+        # Parse bounds: {x1, y1, x2, y2}
+        bounds = result.stdout.strip().split(', ')
+        if len(bounds) >= 4:
+            width = int(bounds[2])
+            height = int(bounds[3])
+            return (width, height)
+        
+        # Fallback to common resolution
+        return (1920, 1080)
+            
+    except Exception:
+        # Fallback dimensions
+        return (1920, 1080)
 
 
 def type_text(text: str, delay: float = 0.1) -> dict:
@@ -127,7 +155,7 @@ def key_up(key: str) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def mouse_click(x: int = None, y: int = None, clicks: int = 1) -> dict:
+def mouse_click(x: int = None, y: int = None, clicks: int = 1, position: str = None) -> dict:
     """
     Click mouse at position or current location
     
@@ -135,8 +163,23 @@ def mouse_click(x: int = None, y: int = None, clicks: int = 1) -> dict:
         x: X coordinate (None for current position)
         y: Y coordinate (None for current position)
         clicks: Number of clicks (1 for single, 2 for double)
+        position: Named position like 'center' (overrides x/y)
     """
     try:
+        # Handle named positions
+        if position:
+            screen_width, screen_height = get_screen_size()
+            position_map = {
+                'center': (screen_width // 2, screen_height // 2),
+                'top-left': (0, 0),
+                'top-right': (screen_width, 0),
+                'bottom-left': (0, screen_height),
+                'bottom-right': (screen_width, screen_height),
+            }
+            
+            if position.lower() in position_map:
+                x, y = position_map[position.lower()]
+        
         if x is not None and y is not None:
             # Move and click
             script = f'''
@@ -168,16 +211,54 @@ def mouse_click(x: int = None, y: int = None, clicks: int = 1) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def mouse_move(x: int, y: int) -> dict:
-    """Move mouse to position"""
+def mouse_move(x: int = None, y: int = None, position: str = None) -> dict:
+    """
+    Move mouse to position (resolution-independent)
+    
+    Args:
+        x: X coordinate (or None if using position)
+        y: Y coordinate (or None if using position)
+        position: Named position like 'center', 'top-left', 'bottom-right'
+    """
     try:
+        screen_width, screen_height = get_screen_size()
+        
+        # Handle named positions
+        if position:
+            position_map = {
+                'center': (screen_width // 2, screen_height // 2),
+                'top-left': (0, 0),
+                'top-right': (screen_width, 0),
+                'bottom-left': (0, screen_height),
+                'bottom-right': (screen_width, screen_height),
+                'top-center': (screen_width // 2, 0),
+                'bottom-center': (screen_width // 2, screen_height),
+                'left-center': (0, screen_height // 2),
+                'right-center': (screen_width, screen_height // 2),
+            }
+            
+            if position.lower() in position_map:
+                x, y = position_map[position.lower()]
+            else:
+                return {
+                    "success": False,
+                    "error": f"Unknown position: {position}. Use: center, top-left, etc."
+                }
+        
+        # If x or y are not provided, calculate center
+        if x is None or y is None:
+            x = screen_width // 2
+            y = screen_height // 2
+        
         # Use cliclick if available (brew install cliclick)
         subprocess.run(['cliclick', f'm:{x},{y}'], check=True, timeout=2)
         return {
             "success": True,
             "x": x,
             "y": y,
-            "message": f"Mouse moved to ({x}, {y})"
+            "screen_width": screen_width,
+            "screen_height": screen_height,
+            "message": f"Mouse moved to ({x}, {y}) - center of {screen_width}x{screen_height} screen"
         }
     except FileNotFoundError:
         return {
@@ -188,9 +269,23 @@ def mouse_move(x: int, y: int) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def mouse_right_click(x: int = None, y: int = None) -> dict:
-    """Right-click mouse"""
+def mouse_right_click(x: int = None, y: int = None, position: str = None) -> dict:
+    """Right-click mouse at position or current location"""
     try:
+        # Handle named positions
+        if position:
+            screen_width, screen_height = get_screen_size()
+            position_map = {
+                'center': (screen_width // 2, screen_height // 2),
+                'top-left': (0, 0),
+                'top-right': (screen_width, 0),
+                'bottom-left': (0, screen_height),
+                'bottom-right': (screen_width, screen_height),
+            }
+            
+            if position.lower() in position_map:
+                x, y = position_map[position.lower()]
+        
         if x is not None and y is not None:
             subprocess.run(['cliclick', f'rc:{x},{y}'], check=True, timeout=2)
         else:
@@ -199,6 +294,8 @@ def mouse_right_click(x: int = None, y: int = None) -> dict:
         location = f" at ({x}, {y})" if x and y else ""
         return {
             "success": True,
+            "x": x,
+            "y": y,
             "message": f"Right-clicked{location}"
         }
     except FileNotFoundError:
