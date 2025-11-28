@@ -1,0 +1,596 @@
+# 📋 COMPLETE PROJECT CONTEXT SUMMARY
+
+## 🎯 PROJECT OVERVIEW
+
+**Name**: MacGPT  
+**GitHub**: https://github.com/siddharthprakash1/MacGPT  
+**Purpose**: A powerful macOS automation system that acts as a "better Siri" - an AI assistant that actually executes commands (like Google Gemini on Android) instead of just providing information.
+
+**Tech Stack**:
+- Python 3.14
+- Ollama (Local LLM) - currently using `gpt-oss:20b` model
+- Flask web UI (HTTPS on port 7889)
+- macOS system-level automation via AppleScript, subprocess, native utilities
+- 189 advanced tools across 20+ categories
+- Voice control in CLI (Vosk for speech-to-text, macOS `say` for TTS)
+
+**License**: MIT
+
+---
+
+## 📁 CURRENT FILE STRUCTURE
+
+```
+/Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP/
+├── config.json                 # Ollama config + all 189 enabled tools
+├── requirements.txt            # Python dependencies
+├── start_cli.py               # CLI launcher
+├── start_web.py               # Web UI launcher
+├── LICENSE                    # MIT License
+├── README.md                  # Main documentation
+├── .gitignore                 # Git ignore rules
+│
+├── core/                      # Core engine
+│   ├── __init__.py
+│   ├── mcp_server.py         # Main MCP server
+│   └── ollama_client.py      # Ollama integration + voice control
+│
+├── tools/                     # All automation tools (20 modules)
+│   ├── __init__.py
+│   ├── advanced_tool_registry.py  # Central registry for all 189 tools
+│   ├── advanced_tools.py          # File ops, app control, notes, reminders
+│   ├── quick_tools.py             # Fast Siri-like actions
+│   ├── app_integrations.py        # Safari, Messages, Mail, Calendar
+│   ├── extended_apps.py           # Chrome, VS Code, Slack, Zoom
+│   ├── window_management.py       # Snap, resize, multi-monitor
+│   ├── file_operations.py         # Compress, extract, rename, duplicate
+│   ├── clipboard_advanced.py      # Clipboard history, images
+│   ├── screen_media.py            # Screen/audio recording, image/video ops
+│   ├── display_control.py         # Night Shift, resolution, mirroring
+│   ├── package_manager.py         # Homebrew, npm, pip
+│   ├── keyboard_mouse.py          # Type, click, scroll (resolution-independent)
+│   ├── backup_tools.py            # Time Machine operations
+│   ├── airdrop_handoff.py         # AirDrop, Handoff, Continuity
+│   ├── database_tools.py          # PostgreSQL, MySQL, MongoDB, Redis
+│   ├── web_tools.py               # Download, scrape, QR, speed test
+│   └── smart_helpers.py           # App name aliases, YouTube search
+│
+├── ui/                        # Web interface
+│   └── templates/
+│       └── index.html         # Beautiful glassmorphism UI with animations
+│
+└── docs/                      # Comprehensive documentation
+    ├── INDEX.md
+    ├── GETTING_STARTED.md
+    ├── ARCHITECTURE.md
+    ├── EXAMPLES.md
+    └── CONTRIBUTING.md
+```
+
+---
+
+## 🛠️ ALL 189 TOOLS BY CATEGORY
+
+### **1. QUICK ACTIONS (10 tools)**
+- `quick_find_file` - Spotlight search
+- `set_volume` - Adjust system volume
+- `set_brightness` - Adjust display brightness
+- `lock_screen` - Lock Mac
+- `sleep_computer` - Put Mac to sleep
+- `toggle_dark_mode` - Switch light/dark mode
+- `toggle_wifi` - Turn WiFi on/off
+- `get_battery_status` - Battery info
+- `open_finder_location` - Open specific folders
+- `empty_trash` - Empty Trash
+
+### **2. APPLICATION CONTROL (15 tools)**
+- `open_application` - Launch any app
+- `close_application` - Quit any app
+- `force_quit_application` - Force quit
+- `is_application_running` - Check if running
+- `list_running_applications` - List all running apps
+- `hide_application` - Hide app windows
+- `unhide_application` - Unhide app
+- `quit_all_applications` - Quit all apps
+- `reopen_application` - Restart app
+- `open_url` - Open URL in default browser
+- `play_spotify_track` - Search & play Spotify songs
+- `search_youtube` - Search YouTube
+- `get_application_info` - Get app details
+- `set_default_application` - Change default app for file type
+- `toggle_application` - Open/close app
+
+### **3. WINDOW MANAGEMENT (13 tools - RESOLUTION-INDEPENDENT)**
+- `snap_window_left` - Snap to left half
+- `snap_window_right` - Snap to right half
+- `snap_side_by_side` - Two apps simultaneously
+- `maximize_window` - Fullscreen window
+- `center_window` - Center on screen
+- `resize_window` - Custom size (percentage-based)
+- `move_window` - Move to position (percentage-based)
+- `list_windows` - List all windows
+- `minimize_window` - Minimize window
+- `bring_window_to_front` - Activate window
+- `snap_to_display` - Snap to specific monitor
+- `get_display_bounds` - Get monitor dimensions
+- `get_active_window` - Get frontmost window
+
+### **4. FILE OPERATIONS (20 tools)**
+- `create_folder` - Make directory
+- `delete_file` - Remove file
+- `move_file` - Move/rename file
+- `copy_file` - Duplicate file
+- `rename_file` - Rename file
+- `get_file_info` - File metadata
+- `list_files` - List directory contents
+- `search_files` - Find files
+- `compress_file` - Create ZIP/archive
+- `extract_archive` - Extract ZIP/archive
+- `duplicate_file` - Copy with suffix
+- `bulk_rename` - Rename multiple files
+- `find_by_extension` - Find files by type
+- `get_file_size` - File/folder size
+- `create_file` - Touch new file
+- `read_file_content` - Read text file
+- `write_file_content` - Write to file
+- `append_to_file` - Append text
+- `get_downloads_folder` - List Downloads
+- `get_desktop_folder` - List Desktop
+
+### **5. CLIPBOARD (8 tools)**
+- `copy_to_clipboard` - Copy text
+- `get_clipboard` - Read clipboard
+- `clear_clipboard` - Clear clipboard
+- `clipboard_history` - View history
+- `restore_clipboard` - Restore from history
+- `save_clipboard_image` - Save image from clipboard
+- `append_clipboard` - Add to clipboard
+- `get_clipboard_type` - Check content type
+
+### **6. SYSTEM INFO & CONTROL (15 tools)**
+- `send_notification` - macOS notification
+- `text_to_speech` - Speak text
+- `take_screenshot` - Capture screen
+- `spotlight_search` - Spotlight search
+- `get_system_info` - System details
+- `get_disk_usage` - Disk space
+- `get_memory_usage` - RAM usage
+- `get_cpu_info` - CPU details
+- `get_network_info` - Network status
+- `restart_computer` - Restart Mac
+- `shutdown_computer` - Shutdown Mac
+- `log_out` - Log out user
+- `get_uptime` - System uptime
+- `get_current_user` - Username
+- `start_screensaver` - Launch screensaver
+
+### **7. APPLE APPS (25 tools)**
+- `create_note` - Apple Notes
+- `list_notes` - List Notes
+- `search_notes` - Search Notes
+- `delete_note` - Remove Note
+- `create_reminder` - Apple Reminders
+- `list_reminders` - List Reminders
+- `complete_reminder` - Mark done
+- `delete_reminder` - Remove Reminder
+- `send_message` - iMessage/SMS
+- `read_messages` - Read Messages
+- `send_email` - Mail.app
+- `read_emails` - Read Mail
+- `create_calendar_event` - Add event
+- `list_calendar_events` - List events
+- `delete_calendar_event` - Remove event
+- `open_safari_url` - Safari
+- `get_safari_tabs` - List Safari tabs
+- `close_safari_tab` - Close Safari tab
+- `safari_private_browsing` - Private window
+- `finder_new_window` - New Finder window
+- `finder_go_to` - Navigate Finder
+- `toggle_bluetooth` - BT on/off
+- `set_wallpaper` - Change wallpaper
+- `set_focus_mode` - Do Not Disturb
+- `quick_timer` - Set timer
+
+### **8. EXTENDED APPS (18 tools)**
+- `open_chrome_url` - Chrome URL
+- `chrome_new_tab` - New Chrome tab
+- `chrome_incognito` - Incognito window
+- `open_vscode_folder` - Open in VS Code
+- `vscode_new_file` - New VS Code file
+- `send_slack_message` - Slack DM
+- `start_zoom_meeting` - Start Zoom
+- `join_zoom_meeting` - Join Zoom
+- `terminal_command` - Run terminal cmd
+- `docker_list_containers` - List containers
+- `docker_start_container` - Start container
+- `docker_stop_container` - Stop container
+- `git_status` - Git status
+- `git_commit` - Git commit
+- `git_pull` - Git pull
+- `pomodoro_timer` - Pomodoro session
+- `take_break_reminder` - Break reminder
+- `get_downloads_info` - Downloads info
+
+### **9. MEDIA & MUSIC (8 tools)**
+- `control_music` - Play/pause/next/previous
+- `get_current_track` - Now playing
+- `set_volume_music` - Music volume
+- `shuffle_music` - Toggle shuffle
+- `repeat_music` - Toggle repeat
+- `play_playlist` - Play Music.app playlist
+- `add_to_library` - Add song to library
+- `search_music` - Search Apple Music
+
+### **10. SCREEN & MEDIA (12 tools)**
+- `screen_recording_start` - Start recording
+- `screen_recording_stop` - Stop recording
+- `record_audio` - Audio recording
+- `resize_image` - Resize image
+- `convert_image` - Convert format
+- `compress_image` - Compress image
+- `create_thumbnail` - Make thumbnail
+- `convert_video` - Convert video format
+- `get_image_info` - Image metadata
+- `batch_convert_images` - Bulk convert
+- `create_gif` - Create GIF
+- `extract_video_frame` - Extract frame
+
+### **11. DISPLAY CONTROL (7 tools)**
+- `toggle_night_shift` - Night Shift on/off
+- `list_displays` - List monitors
+- `set_display_resolution` - Change resolution
+- `mirror_displays` - Mirror monitors
+- `get_display_info` - Display details
+- `arrange_displays` - Rearrange monitors
+- `toggle_true_tone` - True Tone on/off
+
+### **12. PACKAGE MANAGERS (15 tools)**
+- `brew_install` - Install with Homebrew
+- `brew_uninstall` - Uninstall Homebrew pkg
+- `brew_update` - Update Homebrew
+- `brew_upgrade` - Upgrade packages
+- `brew_list` - List installed
+- `brew_search` - Search Homebrew
+- `brew_info` - Package info
+- `npm_install_global` - npm global install
+- `npm_uninstall_global` - npm uninstall
+- `npm_list_global` - List npm packages
+- `npm_update_global` - Update npm
+- `pip_install` - pip install
+- `pip_uninstall` - pip uninstall
+- `pip_list` - List pip packages
+- `pip_outdated` - Outdated pip packages
+
+### **13. KEYBOARD & MOUSE (11 tools - DYNAMIC)**
+- `type_text` - Type text
+- `press_key` - Press key
+- `press_hotkey` - Hotkey combo
+- `mouse_click` - Click (resolution-independent)
+- `mouse_move` - Move mouse (supports named positions: center, top-left, etc.)
+- `mouse_right_click` - Right-click (resolution-independent)
+- `get_mouse_position` - Current position
+- `scroll` - Scroll wheel
+- `drag_mouse` - Drag operation
+- `key_down` - Hold key
+- `key_up` - Release key
+
+### **14. BACKUP (7 tools)**
+- `time_machine_status` - TM status
+- `start_backup` - Start TM backup
+- `stop_backup` - Stop TM backup
+- `list_backups` - List backups
+- `get_latest_backup` - Latest backup info
+- `enable_time_machine` - Enable TM
+- `get_backup_destination` - Backup location
+
+### **15. AIRDROP & HANDOFF (6 tools)**
+- `airdrop_send` - Send via AirDrop
+- `airdrop_open` - Open AirDrop window
+- `airdrop_status` - AirDrop status
+- `handoff_url` - Handoff URL to device
+- `open_continuity_settings` - Continuity settings
+- `share_text` - Share text via AirDrop
+
+### **16. DATABASE (8 tools)**
+- `postgres_query` - PostgreSQL query
+- `postgres_list_databases` - List PG databases
+- `mysql_query` - MySQL query
+- `mysql_list_databases` - List MySQL databases
+- `mongodb_find` - MongoDB find
+- `mongodb_insert` - MongoDB insert
+- `redis_get` - Redis GET
+- `redis_set` - Redis SET
+
+### **17. WEB TOOLS (17 tools)**
+- `download_file` - Download from URL
+- `check_website` - Website status
+- `web_scrape` - Scrape webpage (with realistic headers)
+- `get_page_title` - Get webpage title
+- `get_page_links` - Extract links
+- `shorten_url` - URL shortener
+- `generate_qr_code` - Create QR code
+- `get_ip_info` - IP geolocation
+- `ping_host` - Ping server
+- `traceroute` - Traceroute
+- `dns_lookup` - DNS query
+- `whois_lookup` - WHOIS info
+- `test_download_speed` - Download speed test (50MB)
+- `test_upload_speed` - Upload speed test
+- `http_request` - Custom HTTP request
+- `get_public_ip` - Your public IP
+- `check_port` - Check if port open
+
+### **18. PROCESS MANAGEMENT (5 tools)**
+- `list_processes` - List running processes
+- `kill_process` - Kill process by PID
+- `kill_process_by_name` - Kill by name
+- `get_process_info` - Process details
+- `monitor_process` - Monitor process
+
+### **19. ADVANCED FILE OPS (Additional)**
+- `get_file_hash` - Calculate file hash
+- `compare_files` - Compare two files
+- `sync_folders` - Sync directories
+- `watch_folder` - Monitor folder changes
+- `batch_operations` - Bulk file operations
+
+### **20. NOTIFICATIONS & ALERTS**
+- `notification_with_sound` - Notification with custom sound
+- `scheduled_notification` - Schedule notification
+- `alert_dialog` - Show alert dialog
+
+---
+
+## 🔧 TECHNICAL ARCHITECTURE
+
+### **Core Components**
+
+1. **`core/mcp_server.py`**
+   - Main MCP server
+   - Tool registration and management
+   - Request/response handling
+
+2. **`core/ollama_client.py`**
+   - Ollama LLM integration
+   - Function calling orchestration
+   - Voice control (CLI only):
+     - `voice on/off` - Toggle voice output
+     - `listen` - Voice input via Vosk
+     - Text-to-speech via macOS `say`
+   - Interactive CLI loop
+   - Streaming responses
+
+3. **`tools/advanced_tool_registry.py`**
+   - Central registry for all 189 tools
+   - JSON schema definitions
+   - Function mappings
+
+### **Execution Flow**
+
+```
+User Input (CLI/Web) 
+  → Ollama LLM (gpt-oss:20b)
+  → Function Selection
+  → Tool Execution (AppleScript/subprocess/Python)
+  → Response Formatting
+  → Output (CLI/Web UI)
+```
+
+### **macOS Integration Methods**
+
+1. **AppleScript** (`osascript`) - App control, window management, UI automation
+2. **Subprocess** - Shell commands (`open`, `screencapture`, `mdfind`, `networksetup`)
+3. **Native utilities** - `cliclick` for mouse, `say` for TTS
+4. **Direct file I/O** - Python file operations
+5. **Third-party CLIs** - Homebrew, npm, pip, git, docker
+
+---
+
+## ⚙️ CONFIGURATION
+
+### **`config.json`**
+
+```json
+{
+  "ollama_endpoint": "http://localhost:11434",
+  "model": "gpt-oss:20b",
+  "temperature": 0.7,
+  "enabled": ["all 189 tool names listed"]
+}
+```
+
+### **Key Settings**
+
+- **Model**: `gpt-oss:20b` (20B parameters, smart and fast)
+- **Port**: 7889 (unconventional to avoid conflicts)
+- **HTTPS**: Self-signed cert for microphone access in browser
+- **Voice**: CLI only (Vosk offline speech recognition)
+
+---
+
+## 🎨 WEB UI FEATURES
+
+- **Glassmorphism design** with gradient backgrounds
+- **Particle effects** and animations
+- **Tool execution cards** showing parameters and results
+- **Contextual loading messages** for long operations
+- **Markdown rendering** for AI responses
+- **Animated message bubbles** (AI left, User right)
+- **Responsive layout** for all screen sizes
+- **Dark theme** optimized for macOS
+
+---
+
+## 🔑 KEY IMPROVEMENTS MADE
+
+### **1. Resolution-Independent Window Management**
+- **Problem**: Hardcoded pixel values failed on different screens
+- **Solution**: All window operations use percentages of detected screen dimensions
+- **Multi-monitor**: Supports multiple displays with `display` parameter
+- **Works on**: Any MacBook, external monitor, ultrawide, 4K
+
+### **2. Resolution-Independent Mouse Control**
+- **Problem**: "Move mouse to center" used hardcoded (1824, 559)
+- **Solution**: Dynamic `get_screen_size()` calculates center for ANY resolution
+- **Named positions**: `center`, `top-left`, `top-right`, `bottom-left`, `bottom-right`, `top-center`, `bottom-center`, `left-center`, `right-center`
+- **Latest commit**: `59527b5` - "feat: dynamic mouse positioning - resolution-independent"
+
+### **3. Web Scraping Enhancements**
+- **Problem**: 403 Forbidden errors on websites
+- **Solution**: Realistic browser headers (User-Agent, Accept, etc.)
+- **Improved extraction**: Removes scripts/styles, prioritizes `<main>`/`<article>`
+
+### **4. Speed Test Accuracy**
+- **Problem**: Too fast, unreliable results
+- **Solution**: 50MB download test, 20+ second duration
+- **Added**: Upload speed test
+
+### **5. Spotify Integration**
+- **Problem**: Generic "play music" didn't work for Spotify
+- **Solution**: New `play_spotify_track` tool with search functionality
+
+### **6. Side-by-Side Windows**
+- **Problem**: Second app covered first app when snapping
+- **Solution**: New `snap_side_by_side` tool that arranges both apps simultaneously without activating them
+
+### **7. Network Info Compatibility**
+- **Problem**: Old `airport` utility path no longer exists
+- **Solution**: Using `networksetup -getairportnetwork` and `ipconfig getifaddr`
+
+### **8. Music Control AppleScript**
+- **Problem**: `next`/`previous` are reserved keywords
+- **Solution**: Changed to `next track`/`previous track`
+
+---
+
+## 🚨 IMPORTANT KNOWN ISSUES & SOLUTIONS
+
+### **1. Accessibility Permissions Required**
+
+**Error**: `System Events got an error: osascript is not allowed assistive access. (-1719)`
+
+**Solution**:
+```
+1. System Settings → Privacy & Security
+2. Accessibility → Click lock icon
+3. Add Terminal.app or Python executable
+4. Check the box to enable
+5. Restart terminal/script
+```
+
+### **2. Dependencies Installation**
+
+**Required packages**:
+```bash
+brew install portaudio pkgconf ffmpeg cliclick
+pip install -r requirements.txt
+```
+
+**Python 3.14 compatibility**:
+- ✅ Vosk (speech recognition)
+- ❌ openai-whisper (requires <3.14)
+- ❌ faster-whisper (build issues)
+
+### **3. GPG Signing in Sandbox**
+
+**Issue**: Git commits may fail with GPG signing in sandbox
+**Solution**: Use `--no-gpg-sign` flag or configure `git config commit.gpgsign false`
+
+---
+
+## 🚀 USAGE
+
+### **CLI Mode**
+
+```bash
+cd /Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP
+source venv/bin/activate
+python start_cli.py
+```
+
+**Commands**:
+- Type natural language: "Open Chrome and Safari side by side"
+- `voice on/off` - Toggle voice output
+- `listen` - Voice input
+- `quit` - Exit
+
+### **Web UI Mode**
+
+```bash
+cd /Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP
+source venv/bin/activate
+python start_web.py
+```
+
+**Access**: https://localhost:7889 (accept self-signed cert warning)
+
+---
+
+## 📊 PROJECT STATUS
+
+✅ **Completed**:
+- 189 tools across 20 categories
+- Resolution-independent window & mouse control
+- Multi-monitor support
+- Voice control (CLI)
+- Beautiful web UI with animations
+- Comprehensive documentation
+- MIT License
+- Clean repository structure
+- Smart app name resolution
+- Realistic web scraping
+- Speed tests (upload/download)
+- GitHub repository published
+
+🎯 **Current State**:
+- Fully functional
+- Production-ready
+- Well-documented
+- Actively used by creator on weekends
+- Ready for LinkedIn/GitHub showcase
+
+---
+
+## 💡 EXAMPLE USE CASES
+
+```
+"Open Chrome and WhatsApp side by side on monitor 2"
+"Take a screenshot and save to Desktop"
+"Download file from [URL] and compress it"
+"Send message to John saying 'Meeting at 3pm'"
+"Create reminder for tomorrow at 9am 'Team standup'"
+"Play Stranger Things soundtrack on Spotify"
+"Check my battery status"
+"Move mouse to center of screen"  ← Now dynamic!
+"Snap Notes and Reminders side by side on left screen"
+"Toggle dark mode"
+"Test my internet download speed"
+"Scrape Wikipedia article about Stranger Things"
+"Create a note with meeting notes"
+"Set volume to 50%"
+"Lock screen"
+```
+
+---
+
+## 🔗 LINKS
+
+- **GitHub**: https://github.com/siddharthprakash1/MacGPT
+- **Local Path**: `/Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP`
+- **Ollama**: http://localhost:11434
+- **Web UI**: https://localhost:7889
+
+---
+
+## 📝 RECENT COMMITS (Last 5)
+
+```
+59527b5 - feat: dynamic mouse positioning - resolution-independent
+c5cdbea - docs: add MIT License
+[previous commits...]
+```
+
+---
+
+**🎉 PROJECT IS COMPLETE AND PRODUCTION-READY!**
+

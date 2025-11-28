@@ -152,16 +152,22 @@ from tools.package_manager import (
     pip_outdated
 )
 
-from tools.keyboard_mouse import (
-    type_text,
-    press_key,
-    press_hotkey,
-    mouse_click,
-    mouse_move,
-    mouse_right_click,
-    get_mouse_position,
-    scroll,
-    drag_mouse
+# Keyboard/mouse tools removed - they were gimmicky
+
+# NEW SPOTLIGHT POWER TOOLS!
+from tools.spotlight_tools import (
+    spotlight_advanced_search,
+    find_files_by_date,
+    find_large_files,
+    find_by_content,
+    find_by_author,
+    find_downloads_from_site,
+    find_recent_opened,
+    get_file_metadata,
+    find_duplicates_by_name,
+    spotlight_natural_search,
+    find_apps_using_disk_space,
+    find_unused_apps
 )
 
 from tools.backup_tools import (
@@ -705,6 +711,174 @@ ADVANCED_TOOLS = {
             "properties": {}
         },
         "function": get_battery_status
+    },
+    
+    # ========== SPOTLIGHT POWER TOOLS (12 tools) ==========
+    "spotlight_advanced_search": {
+        "description": "Advanced Spotlight search with filters for type, date, size, and folder. Much more powerful than basic find.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query (filename or content)"},
+                "kind": {"type": "string", "enum": ["pdf", "image", "video", "audio", "document", "folder", "app", "email", "presentation", "spreadsheet", "code"], "description": "File type filter"},
+                "in_folder": {"type": "string", "description": "Limit to folder (e.g., ~/Downloads)"},
+                "date_filter": {"type": "string", "description": "today, yesterday, week, month, year, or YYYY-MM-DD"},
+                "size_filter": {"type": "string", "enum": ["large", "medium", "small"], "description": "Size filter (large >100MB, medium 10-100MB, small <10MB)"},
+                "limit": {"type": "integer", "description": "Max results (default 20)"}
+            },
+            "required": []
+        },
+        "function": spotlight_advanced_search
+    },
+    
+    "find_files_by_date": {
+        "description": "Find files by creation or modification date - perfect for 'files from last week'",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "date_range": {"type": "string", "description": "today, yesterday, week, month, year"},
+                "file_type": {"type": "string", "description": "Optional: pdf, image, video, audio"},
+                "in_folder": {"type": "string", "description": "Limit to folder"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": ["date_range"]
+        },
+        "function": find_files_by_date
+    },
+    
+    "find_large_files": {
+        "description": "Find large files for disk cleanup - shows files above a size threshold with total space used. Essential for freeing disk space!",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "min_size_mb": {"type": "integer", "description": "Minimum file size in MB (default 100)"},
+                "in_folder": {"type": "string", "description": "Folder to search (default: home)"},
+                "file_type": {"type": "string", "enum": ["video", "image", "archive", "disk_image", "audio"], "description": "Limit to file type"},
+                "limit": {"type": "integer", "description": "Max results (default 30)"}
+            },
+            "required": []
+        },
+        "function": find_large_files
+    },
+    
+    "find_by_content": {
+        "description": "Full-text search INSIDE files - find documents containing specific text",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to search for inside files"},
+                "file_type": {"type": "string", "description": "pdf, document, email, note"},
+                "in_folder": {"type": "string", "description": "Limit to folder"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": ["text"]
+        },
+        "function": find_by_content
+    },
+    
+    "find_by_author": {
+        "description": "Find documents by author name (useful for finding all docs from a specific person)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "author": {"type": "string", "description": "Author name to search for"},
+                "in_folder": {"type": "string", "description": "Limit to folder"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": ["author"]
+        },
+        "function": find_by_author
+    },
+    
+    "find_downloads_from_site": {
+        "description": "Find files downloaded from a specific website - great for finding files from GitHub, Google Drive, etc.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "domain": {"type": "string", "description": "Domain name (e.g., 'github.com', 'google.com')"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": ["domain"]
+        },
+        "function": find_downloads_from_site
+    },
+    
+    "find_recent_opened": {
+        "description": "Find recently opened files - see what you worked on recently",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "hours": {"type": "integer", "description": "Within last N hours (default 24)"},
+                "file_type": {"type": "string", "description": "pdf, image, video, document, code"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": []
+        },
+        "function": find_recent_opened
+    },
+    
+    "get_file_metadata": {
+        "description": "Get ALL Spotlight metadata for a file - dimensions, author, dates, where downloaded from, etc.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Path to file"}
+            },
+            "required": ["file_path"]
+        },
+        "function": get_file_metadata
+    },
+    
+    "find_duplicates_by_name": {
+        "description": "Find potential duplicate files by similar names - great for cleanup",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "in_folder": {"type": "string", "description": "Folder to search"},
+                "extension": {"type": "string", "description": "File extension (e.g., '.pdf')"},
+                "limit": {"type": "integer", "description": "Max files to analyze"}
+            },
+            "required": []
+        },
+        "function": find_duplicates_by_name
+    },
+    
+    "spotlight_natural_search": {
+        "description": "Natural language file search - understands phrases like 'large video files', 'PDFs from last week', 'images in Downloads'",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Natural language query (e.g., 'large video files', 'PDFs from last week')"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": ["query"]
+        },
+        "function": spotlight_natural_search
+    },
+    
+    "find_apps_using_disk_space": {
+        "description": "Find which apps are using the most disk space - sorted by size",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max results (default 20)"}
+            },
+            "required": []
+        },
+        "function": find_apps_using_disk_space
+    },
+    
+    "find_unused_apps": {
+        "description": "Find apps not used in X days - great for cleanup and uninstalling unused apps",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "days_unused": {"type": "integer", "description": "Days since last use (default 90)"},
+                "limit": {"type": "integer", "description": "Max results"}
+            },
+            "required": []
+        },
+        "function": find_unused_apps
     },
     
     # SAFARI INTEGRATION
@@ -1707,123 +1881,7 @@ ADVANCED_TOOLS = {
         "function": pip_outdated
     },
     
-    # ========== KEYBOARD & MOUSE (9 tools) ==========
-    "type_text": {
-        "description": "Type text (simulate keyboard input)",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "text": {"type": "string", "description": "Text to type"},
-                "delay": {"type": "number", "description": "Delay between keystrokes"}
-            },
-            "required": ["text"]
-        },
-        "function": type_text
-    },
-    
-    "press_key": {
-        "description": "Press key with optional modifiers (e.g., 'return', 'tab')",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "key": {"type": "string", "description": "Key to press"},
-                "modifiers": {"type": "array", "items": {"type": "string"}, "description": "Modifiers (command, shift, etc.)"}
-            },
-            "required": ["key"]
-        },
-        "function": press_key
-    },
-    
-    "press_hotkey": {
-        "description": "Press hotkey combination (e.g., 'cmd+c', 'ctrl+alt+del')",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "combo": {"type": "string", "description": "Key combination"}
-            },
-            "required": ["combo"]
-        },
-        "function": press_hotkey
-    },
-    
-    "mouse_click": {
-        "description": "Click mouse at position or current location",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "x": {"type": "integer", "description": "X coordinate"},
-                "y": {"type": "integer", "description": "Y coordinate"},
-                "clicks": {"type": "integer", "description": "Number of clicks (1 or 2)"}
-            },
-            "required": []
-        },
-        "function": mouse_click
-    },
-    
-    "mouse_move": {
-        "description": "Move mouse to position (resolution-independent). Can use named positions like 'center', 'top-left', etc. or specific coordinates. No parameters moves to center. Requires cliclick.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "x": {"type": "integer", "description": "X coordinate (optional if using position)"},
-                "y": {"type": "integer", "description": "Y coordinate (optional if using position)"},
-                "position": {
-                    "type": "string", 
-                    "enum": ["center", "top-left", "top-right", "bottom-left", "bottom-right", "top-center", "bottom-center", "left-center", "right-center"],
-                    "description": "Named position on screen (optional, overrides x/y)"
-                }
-            },
-            "required": []
-        },
-        "function": mouse_move
-    },
-    
-    "mouse_right_click": {
-        "description": "Right-click mouse (requires cliclick)",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "x": {"type": "integer", "description": "X coordinate"},
-                "y": {"type": "integer", "description": "Y coordinate"}
-            },
-            "required": []
-        },
-        "function": mouse_right_click
-    },
-    
-    "get_mouse_position": {
-        "description": "Get current mouse position",
-        "parameters": {"type": "object", "properties": {}},
-        "function": get_mouse_position
-    },
-    
-    "scroll": {
-        "description": "Scroll mouse wheel (requires cliclick)",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "direction": {"type": "string", "description": "'up' or 'down'"},
-                "amount": {"type": "integer", "description": "Scroll amount"}
-            },
-            "required": []
-        },
-        "function": scroll
-    },
-    
-    "drag_mouse": {
-        "description": "Drag mouse from one position to another (requires cliclick)",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "from_x": {"type": "integer", "description": "From X"},
-                "from_y": {"type": "integer", "description": "From Y"},
-                "to_x": {"type": "integer", "description": "To X"},
-                "to_y": {"type": "integer", "description": "To Y"}
-            },
-            "required": ["from_x", "from_y", "to_x", "to_y"]
-        },
-        "function": drag_mouse
-    },
+    # ========== KEYBOARD & MOUSE - REMOVED (were gimmicky) ==========
     
     # ========== TIME MACHINE & BACKUPS (8 tools) ==========
     "time_machine_status": {

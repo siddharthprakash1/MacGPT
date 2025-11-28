@@ -1,13 +1,13 @@
 """
 Web UI for macOS MCP Server
-Simple Flask-based chat interface
+OPTIMIZED Flask-based chat interface
 """
 
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import json
 import sys
-from core.ollama_client import OllamaClient, load_config
+from core.ollama_client import OllamaClient, load_config, SYSTEM_PROMPT
 
 app = Flask(__name__)
 CORS(app)
@@ -16,12 +16,30 @@ CORS(app)
 config = load_config()
 client = OllamaClient(config)
 
+# Set optimized system prompt on startup
+client.set_system_prompt(SYSTEM_PROMPT)
+
+# Pre-cache tools list for /api/tools endpoint
+_cached_tools_list = None
+
+def get_cached_tools():
+    """Get cached tools list for API"""
+    global _cached_tools_list
+    if _cached_tools_list is None:
+        _cached_tools_list = [
+            {'name': name, 'description': tool['description']}
+            for name, tool in client.mcp_server.tools.items()
+        ]
+    return _cached_tools_list
+
+
 @app.route('/')
 def index():
     """Serve the main chat interface"""
     return render_template('index.html', 
                          model=config['ollama']['model'],
                          tool_count=len(client.mcp_server.tools))
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
@@ -33,32 +51,12 @@ def chat():
         return jsonify({'error': 'No message provided'}), 400
     
     try:
-        # Track tool executions
+        # Track tool executions efficiently
         tool_executions = []
         original_execute = client.mcp_server.execute_tool
         
         def tracked_execute(tool_name, parameters):
-            # Print status for long-running tools
-            long_running_tools = {
-                'test_download_speed': 'Testing download speed (20-30 seconds)...',
-                'test_upload_speed': 'Testing upload speed (10-15 seconds)...',
-                'start_time_machine_backup': 'Starting Time Machine backup...',
-                'download_file': f"Downloading file...",
-                'compress_files': 'Compressing files...',
-                'extract_archive': 'Extracting archive...',
-                'web_scrape': 'Scraping website...',
-                'convert_video_format': 'Converting video (this may take a while)...',
-                'brew_install': f"Installing {parameters.get('package', 'package')} via Homebrew...",
-                'brew_upgrade': 'Upgrading packages...',
-                'npm_install_global': f"Installing {parameters.get('package', 'package')} globally...",
-                'pip_install': f"Installing {parameters.get('package', 'package')}...",
-            }
-            
-            if tool_name in long_running_tools:
-                print(f"\n🔄 {long_running_tools[tool_name]}", flush=True)
-            
             result = original_execute(tool_name, parameters)
-            
             tool_executions.append({
                 'tool': tool_name,
                 'params': parameters,
@@ -87,27 +85,20 @@ def chat():
             'error': str(e)
         }), 500
 
+
 @app.route('/api/reset', methods=['POST'])
 def reset():
     """Reset conversation history"""
-    global client
     client.reset_conversation()
-    client.set_system_prompt(
-        "You are a helpful assistant with access to macOS system tools. "
-        "When users ask you to perform system tasks, use the available tools to help them."
-    )
+    client.set_system_prompt(SYSTEM_PROMPT)
     return jsonify({'success': True, 'message': 'Conversation reset'})
+
 
 @app.route('/api/tools', methods=['GET'])
 def list_tools():
-    """List available tools"""
-    tools = []
-    for name, tool in client.mcp_server.tools.items():
-        tools.append({
-            'name': name,
-            'description': tool['description']
-        })
-    return jsonify({'tools': tools})
+    """List available tools (cached)"""
+    return jsonify({'tools': get_cached_tools()})
+
 
 @app.route('/api/config', methods=['GET'])
 def get_config():
@@ -118,5 +109,6 @@ def get_config():
         'temperature': config['ollama']['temperature'],
         'tool_count': len(client.mcp_server.tools)
     })
+
 
 # Web UI is started via start_web.py launcher
