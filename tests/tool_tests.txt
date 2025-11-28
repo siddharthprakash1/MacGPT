@@ -1,0 +1,360 @@
+# MacGPT Tool Testing Suite
+# Run each question in the UI/CLI to test tool functionality
+# Mark PASS/FAIL after each test
+
+================================================================================
+## 1. SPOTLIGHT TOOLS (New - 12 tools)
+================================================================================
+
+### 1.1 find_files_by_date
+Q: What files did I modify today?
+Expected: List of user files from Desktop/Documents/Downloads (NO Library files)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.2 find_large_files
+Q: Find files over 100MB on my Mac
+Expected: List of large files with sizes, sorted largest first
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.3 find_by_content
+Q: Find documents containing "project"
+Expected: Files that have "project" in their content
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.4 find_recent_opened
+Q: What files did I open in the last 2 hours?
+Expected: Recently accessed files (NO cache/Library files)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.5 find_apps_using_disk_space
+Q: Which apps are using the most disk space?
+Expected: Apps from /Applications sorted by size with GB/MB display
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.6 find_unused_apps
+Q: Which apps haven't I used in 90 days?
+Expected: List of unused apps with sizes and last used dates
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.7 spotlight_natural_search
+Q: large video files in Downloads
+Expected: Video files >100MB from Downloads folder
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.8 find_downloads_from_site
+Q: What did I download from github.com?
+Expected: Files in Downloads with github.com in WhereFroms metadata
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.9 find_duplicates_by_name
+Q: Find duplicate files in my Downloads folder
+Expected: Groups of files with similar names
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 1.10 get_file_metadata
+Q: Show me metadata for ~/Desktop (pick a file that exists)
+Expected: All Spotlight metadata attributes for the file
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 2. WINDOW MANAGEMENT (12 tools)
+================================================================================
+
+### 2.1 snap_side_by_side
+Q: Open Chrome and Safari side by side
+Expected: Both apps open and snapped to left/right halves
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 2.2 maximize_window
+Q: Maximize Finder window
+Expected: Finder window fills the screen
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 2.3 center_window
+Q: Center the Notes window
+Expected: Notes app window centered on screen
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 2.4 list_all_windows
+Q: List all open windows
+Expected: List of currently open windows with app names
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 2.5 minimize_window
+Q: Minimize Safari
+Expected: Safari window minimized to dock
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 3. APPLICATION CONTROL (10 tools)
+================================================================================
+
+### 3.1 open_application
+Q: Open Calculator
+Expected: Calculator app launches
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 3.2 close_application
+Q: Close Calculator
+Expected: Calculator app closes
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 3.3 list_running_apps
+Q: What apps are currently running?
+Expected: List of running applications
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 3.4 open_url
+Q: Open google.com
+Expected: Google opens in default browser
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 4. QUICK ACTIONS (10 tools)
+================================================================================
+
+### 4.1 set_volume
+Q: Set volume to 50%
+Expected: System volume changes to 50%
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 4.2 get_battery_status
+Q: What's my battery level?
+Expected: Battery percentage and charging status
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 4.3 toggle_dark_mode
+Q: Toggle dark mode
+Expected: System appearance switches light/dark
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 4.4 lock_screen
+Q: Lock my screen
+Expected: Screen locks (display sleeps)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 4.5 empty_trash
+Q: Empty the trash
+Expected: Trash is emptied
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 5. FILE OPERATIONS (10 tools)
+================================================================================
+
+### 5.1 list_files
+Q: List files in my Downloads folder
+Expected: List of files in ~/Downloads
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 5.2 get_file_info
+Q: Get info about ~/Desktop
+Expected: File/folder metadata (size, dates, etc.)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 5.3 compress_files
+Q: Compress my Downloads folder
+Expected: ZIP archive created
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 5.4 find_files_by_extension
+Q: Find all PDF files in Documents
+Expected: List of .pdf files
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 6. CLIPBOARD (7 tools)
+================================================================================
+
+### 6.1 clipboard_read (copy something first)
+Q: What's in my clipboard?
+Expected: Current clipboard contents shown
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 6.2 clipboard_get_type
+Q: What type of content is in my clipboard?
+Expected: "text", "image", or "file"
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 7. SYSTEM INFO (5 tools)
+================================================================================
+
+### 7.1 get_system_info
+Q: Show me system information
+Expected: macOS version, uptime, disk usage
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 7.2 get_disk_usage
+Q: How much disk space do I have?
+Expected: Disk usage statistics
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 7.3 get_network_info
+Q: What's my network status?
+Expected: WiFi name, IP address
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 8. APPLE APPS (8 tools)
+================================================================================
+
+### 8.1 create_note
+Q: Create a note titled "Test Note" with content "This is a test"
+Expected: Note created in Apple Notes
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 8.2 create_reminder
+Q: Create a reminder "Test reminder" for tomorrow
+Expected: Reminder created in Apple Reminders
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 8.3 create_calendar_event
+Q: Create a calendar event "Meeting" for tomorrow at 2pm
+Expected: Event created in Calendar
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 9. MUSIC CONTROL (3 tools)
+================================================================================
+
+### 9.1 play_spotify_track
+Q: Play "Shape of You" on Spotify
+Expected: Spotify opens and plays the song
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 9.2 control_music
+Q: Pause the music
+Expected: Music playback pauses
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 10. WEB TOOLS (5 tools)
+================================================================================
+
+### 10.1 check_website_status
+Q: Is google.com up?
+Expected: HTTP status code (200)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 10.2 get_ip_info
+Q: What's my public IP?
+Expected: IP address and location info
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 10.3 ping_host
+Q: Ping google.com
+Expected: Ping response times
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 10.4 test_download_speed
+Q: Test my internet download speed
+Expected: Download speed in Mbps (takes 20-30 seconds)
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## 11. DEVELOPER TOOLS (5 tools)
+================================================================================
+
+### 11.1 git_status
+Q: Show git status of this project
+Expected: Git status output
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 11.2 docker_ps
+Q: List running Docker containers
+Expected: List of containers (or "no containers")
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+### 11.3 brew_list
+Q: What Homebrew packages do I have installed?
+Expected: List of brew packages
+Result: [ ] PASS  [ ] FAIL
+Notes: _______________
+
+================================================================================
+## QUICK SMOKE TEST (Run these 5 to verify basic functionality)
+================================================================================
+
+1. "What's my battery level?"
+2. "Open Calculator"
+3. "Find files over 100MB"
+4. "What apps are using the most space?"
+5. "List files in Downloads"
+
+================================================================================
+## PERFORMANCE TEST
+================================================================================
+
+Test 1: First message after restart
+Time: ___ seconds
+
+Test 2: Second message (model cached)
+Time: ___ seconds
+
+Test 3: After 10 messages
+Time: ___ seconds
+
+================================================================================
+## TESTING NOTES
+================================================================================
+
+Date: _______________
+Tester: _______________
+Model: _______________
+
+Total Tests: 45
+Passed: ___
+Failed: ___
+Pass Rate: ___%
+
+Issues Found:
+1. 
+2.
+3.
+
+

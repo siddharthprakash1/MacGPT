@@ -1321,11 +1321,11 @@ ADVANCED_TOOLS = {
     },
     
     "maximize_window": {
-        "description": "Maximize window (fullscreen)",
+        "description": "Maximize a window to fill the entire screen. Use for: make fullscreen, maximize, expand window, make window bigger, full size",
         "parameters": {
             "type": "object",
             "properties": {
-                "app_name": {"type": "string", "description": "Application name"}
+                "app_name": {"type": "string", "description": "Application name (e.g., Finder, Safari, Chrome)"}
             },
             "required": ["app_name"]
         },
@@ -1373,7 +1373,7 @@ ADVANCED_TOOLS = {
     },
     
     "list_all_windows": {
-        "description": "List all open windows",
+        "description": "List all currently open windows on the Mac. Use for: what windows are open, show windows, list windows, which windows, open windows",
         "parameters": {"type": "object", "properties": {}},
         "function": list_all_windows
     },

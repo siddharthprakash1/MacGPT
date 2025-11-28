@@ -1,0 +1,1283 @@
+{
+  "timestamp": "2025-11-28T12:45:52.477402",
+  "total_tests": 57,
+  "passed": 52,
+  "failed": 5,
+  "pass_rate": 91.22807017543859,
+  "total_time": 605.9886121749878,
+  "category_stats": {
+    "natural_language": {
+      "passed": 6,
+      "total": 6
+    },
+    "complex_queries": {
+      "passed": 5,
+      "total": 5
+    },
+    "file_operations": {
+      "passed": 5,
+      "total": 5
+    },
+    "app_management": {
+      "passed": 6,
+      "total": 6
+    },
+    "system_control": {
+      "passed": 6,
+      "total": 6
+    },
+    "productivity": {
+      "passed": 4,
+      "total": 4
+    },
+    "developer_tools": {
+      "passed": 5,
+      "total": 5
+    },
+    "window_management": {
+      "passed": 3,
+      "total": 5
+    },
+    "edge_cases": {
+      "passed": 4,
+      "total": 5
+    },
+    "security_awareness": {
+      "passed": 1,
+      "total": 3
+    },
+    "music_media": {
+      "passed": 4,
+      "total": 4
+    },
+    "clipboard": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "name": "Vague Request",
+      "question": "open something to browse the web",
+      "expected_tools": [
+        "open_application",
+        "open_url"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 3.6796607971191406,
+      "error": null,
+      "response": "\u2705 Safari has been launched for you to browse the web. Let me know if you\u2019d like to open a specific URL or perform another task!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Informal Language",
+      "question": "yo whats eating my disk space",
+      "expected_tools": [
+        "find_large_files",
+        "find_apps_using_disk_space",
+        "get_disk_usage"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_disk_usage"
+      ],
+      "time": 4.150815963745117,
+      "error": null,
+      "response": "Here\u2019s your current disk usage:\n\n| Metric | Value |\n|--------|-------|\n| Total | **926\u202fGi** |\n| Used | **11\u202fGi** |\n| Available | **675\u202fGi** |\n| Usage % | **2\u202f%** |\n\nYour disk is mostly free, so there shouldn\u2019t be a \u201cbig eater\u201d right now. If you\u2019d like to dig deeper (e.g., find the largest files or directories), just let me know!",
+      "tool_results": [
+        {
+          "tool": "get_disk_usage",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Typo Tolerance",
+      "question": "opn calculator",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 2.1778433322906494,
+      "error": null,
+      "response": "\u2705 Calculator has been opened. Let me know if you need anything else!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Multiple Ways to Ask",
+      "question": "launch safari",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 2.799213171005249,
+      "error": null,
+      "response": "\u2705 Safari is now open for you. If you need anything else, just let me know!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Conversational",
+      "question": "hey can you check if my wifi is working",
+      "expected_tools": [
+        "get_network_info",
+        "toggle_wifi"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_network_info"
+      ],
+      "time": 3.252547025680542,
+      "error": null,
+      "response": "It looks like you\u2019re **not connected to a Wi\u2011Fi network** (IP shows a local address).  \nIf you want to turn Wi\u2011Fi on, let me know!",
+      "tool_results": [
+        {
+          "tool": "get_network_info",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Abbreviations",
+      "question": "show me sys info",
+      "expected_tools": [
+        "get_system_info"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_system_info"
+      ],
+      "time": 6.55576491355896,
+      "error": null,
+      "response": "**System Information**\n\n| Item | Value |\n|------|-------|\n| OS | macOS 26.1 |\n| Computer Name | MNQ6T2F677 |\n| Architecture | arm64 |\n| Processor | arm |\n| Uptime | 6 days, 13\u202fh 16\u202fm (load: 10.01\u202f/\u202f5.23\u202f/\u202f4.23) |\n| Disk | 926\u202fGi total, 11\u202fGi used (2\u202f% used) |\n\nLet me know if you\u2019d like details on anything else (e.g., battery, memory, network).",
+      "tool_results": [
+        {
+          "tool": "get_system_info",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Multi-App Window",
+      "question": "open Chrome and Notes side by side",
+      "expected_tools": [
+        "open_application",
+        "snap_side_by_side"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application",
+        "open_application",
+        "snap_side_by_side"
+      ],
+      "time": 10.619383811950684,
+      "error": null,
+      "response": "\u2705 Google\u202fChrome and Apple\u202fNotes are now side\u2011by\u2011side on your main display.  \nLet me know if you need anything else!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        },
+        {
+          "tool": "open_application",
+          "success": true
+        },
+        {
+          "tool": "snap_side_by_side",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Conditional Action",
+      "question": "if battery is low, tell me",
+      "expected_tools": [
+        "get_battery_status"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_battery_status"
+      ],
+      "time": 5.4706549644470215,
+      "error": null,
+      "response": "Your battery is **full (100\u202f%) and currently charging**. No low\u2011battery alert needed. Let me know if you\u2019d like to check anything else!",
+      "tool_results": [
+        {
+          "tool": "get_battery_status",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Sequential Tasks",
+      "question": "create a note called Shopping List with items: milk, eggs, bread",
+      "expected_tools": [
+        "create_note"
+      ],
+      "passed": true,
+      "tools_called": [
+        "create_note"
+      ],
+      "time": 5.2803521156311035,
+      "error": null,
+      "response": "\u2705 Note **\u201cShopping List\u201d** created with:\n\n- Milk  \n- Eggs  \n- Bread  \n\nAnything else?",
+      "tool_results": [
+        {
+          "tool": "create_note",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Specific File Search",
+      "question": "find PDF files I modified this week",
+      "expected_tools": [
+        "find_files_by_date",
+        "spotlight_advanced_search"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_files_by_date"
+      ],
+      "time": 7.461003065109253,
+      "error": null,
+      "response": "No PDF files were modified in the past week on your system.  \nIf you want to search a different folder or a broader date range, just let me know!",
+      "tool_results": [
+        {
+          "tool": "find_files_by_date",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Time-based Query",
+      "question": "what did I work on yesterday",
+      "expected_tools": [
+        "find_files_by_date"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_recent_opened",
+        "find_recent_opened"
+      ],
+      "time": 7.153932809829712,
+      "error": "Different tool used: ['find_recent_opened', 'find_recent_opened']",
+      "response": "It looks like nothing was opened in the last 24\u202fhours.  \nIf you\u2019d like to check a different file type or a longer time span, just let me know!",
+      "tool_results": [
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Find Specific Type",
+      "question": "find all python files in my projects folder",
+      "expected_tools": [
+        "list_files",
+        "find_files_by_extension",
+        "spotlight_advanced_search"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_files_by_extension",
+        "quick_find_file"
+      ],
+      "time": 10.570362329483032,
+      "error": null,
+      "response": "I couldn't find any `*.py` files in a `Projects` folder under your home directory.  \nPlease double\u2011check the folder name or path, or let me know if you\u2019d like me to search a different location.",
+      "tool_results": [
+        {
+          "tool": "find_files_by_extension",
+          "success": true
+        },
+        {
+          "tool": "quick_find_file",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Large File Hunt",
+      "question": "what files are taking up the most space in Downloads",
+      "expected_tools": [
+        "find_large_files"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_large_files"
+      ],
+      "time": 10.74230694770813,
+      "error": null,
+      "response": "**Top space\u2011consuming files in `~/Downloads` (\u2265\u202f100\u202fMB):**\n\n| # | File | Size |\n|---|------|------|\n| 1 | Docker.dmg | 533.4\u202fMB |\n| 2 | VSCode\u2011darwin\u2011universal.zip | 247.7\u202fMB |\n| 3 | ChatGPT_Atlas.dmg | 221.5\u202fMB |\n| 4 | Brave\u2011Browser.dmg | 221.2\u202fMB |\n| 5 | Claude.dmg | 200.6\u202fMB |\n| 6 | Discord.dmg | 188.2\u202fMB |\n| 7 | Cursor\u2011darwin\u2011arm64.dmg | 150.0\u202fMB |\n| 8 | Miniconda3\u2011latest\u2011MacOSX\u2011arm64.pkg | 108.9\u202fMB |\n| 9 | Visual\u202fStudio\u202fCode.app | 0.0\u202fMB (empty or placeholder) |\n\nTotal size of these files: ",
+      "tool_results": [
+        {
+          "tool": "find_large_files",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Recent Documents",
+      "question": "show me documents I opened recently",
+      "expected_tools": [
+        "find_recent_opened",
+        "find_files_by_date"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_recent_opened",
+        "find_recent_opened",
+        "find_recent_opened",
+        "find_recent_opened",
+        "find_recent_opened",
+        "spotlight_natural_search",
+        "find_files_by_date"
+      ],
+      "time": 43.42947721481323,
+      "error": null,
+      "response": "I couldn\u2019t find any recently opened documents in the last 48\u202fhours.  \nLet me know if you\u2019d like me to look in a specific folder or file type!",
+      "tool_results": [
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "find_recent_opened",
+          "success": true
+        },
+        {
+          "tool": "spotlight_natural_search",
+          "success": true
+        },
+        {
+          "tool": "find_files_by_date",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Duplicate Check",
+      "question": "are there any duplicate files in my Downloads",
+      "expected_tools": [
+        "find_duplicates_by_name"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_duplicates_by_name"
+      ],
+      "time": 15.373365879058838,
+      "error": null,
+      "response": "No duplicate\u2011name files were found in your **Downloads** folder. If you suspect duplicates with different extensions or names, let me know!",
+      "tool_results": [
+        {
+          "tool": "find_duplicates_by_name",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Content Search",
+      "question": "find files containing the word 'password'",
+      "expected_tools": [
+        "find_by_content"
+      ],
+      "passed": true,
+      "tools_called": [
+        "find_by_content"
+      ],
+      "time": 7.428719997406006,
+      "error": null,
+      "response": "I searched the **Downloads** folder for any file containing the word \u201cpassword\u201d and didn\u2019t find any matches. Let me know if you\u2019d like me to scan a different folder or file type!",
+      "tool_results": [
+        {
+          "tool": "find_by_content",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Open Popular App",
+      "question": "open spotify",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 4.749330759048462,
+      "error": null,
+      "response": "Spotify has been opened. Let me know what you\u2019d like to do next!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Close App",
+      "question": "close calculator",
+      "expected_tools": [
+        "close_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "close_application"
+      ],
+      "time": 4.308382034301758,
+      "error": null,
+      "response": "Calculator has been closed. Anything else?",
+      "tool_results": [
+        {
+          "tool": "close_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Check Running",
+      "question": "is Chrome running",
+      "expected_tools": [
+        "list_running_apps"
+      ],
+      "passed": true,
+      "tools_called": [
+        "list_running_apps"
+      ],
+      "time": 4.172023773193359,
+      "error": null,
+      "response": "Yes, **Google Chrome** is running. Let me know if you need anything else!",
+      "tool_results": [
+        {
+          "tool": "list_running_apps",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Multiple Apps",
+      "question": "what apps do I have open right now",
+      "expected_tools": [
+        "list_running_apps"
+      ],
+      "passed": true,
+      "tools_called": [
+        "list_running_apps"
+      ],
+      "time": 5.46056604385376,
+      "error": null,
+      "response": "Here\u2019s a list of all applications currently open:\n\n- Brave Browser  \n- Calendar  \n- ChatGPT Atlas  \n- Cursor  \n- Discord  \n- Docker Desktop  \n- Finder  \n- Google Chrome  \n- Microsoft Outlook  \n- Notes  \n- Safari  \n- Slack  \n- Spotify  \n- System Settings  \n- WhatsApp  \n\nLet me know what you\u2019d like to do next!",
+      "tool_results": [
+        {
+          "tool": "list_running_apps",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "App Alias Test",
+      "question": "open vscode",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 4.147898197174072,
+      "error": null,
+      "response": "Visual Studio Code has been launched. Anything else?",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "App Alias Test 2",
+      "question": "open brave browser",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 4.980875015258789,
+      "error": null,
+      "response": "Brave Browser is now open. Let me know if you need anything else!",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Volume Control",
+      "question": "turn volume down to 30",
+      "expected_tools": [
+        "set_volume"
+      ],
+      "passed": true,
+      "tools_called": [
+        "set_volume"
+      ],
+      "time": 5.421070098876953,
+      "error": null,
+      "response": "Volume set to 30%. Anything else?",
+      "tool_results": [
+        {
+          "tool": "set_volume",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Mute Test",
+      "question": "mute the volume",
+      "expected_tools": [
+        "set_volume"
+      ],
+      "passed": true,
+      "tools_called": [
+        "set_volume"
+      ],
+      "time": 4.864099740982056,
+      "error": null,
+      "response": "Muted. Let me know if you\u2019d like to adjust it again or do something else.",
+      "tool_results": [
+        {
+          "tool": "set_volume",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Dark Mode",
+      "question": "switch to dark mode",
+      "expected_tools": [
+        "toggle_dark_mode"
+      ],
+      "passed": true,
+      "tools_called": [
+        "toggle_dark_mode"
+      ],
+      "time": 9.002865076065063,
+      "error": null,
+      "response": "Dark mode is now enabled. Anything else?",
+      "tool_results": [
+        {
+          "tool": "toggle_dark_mode",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Battery Check",
+      "question": "how much battery do I have left",
+      "expected_tools": [
+        "get_battery_status"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_battery_status"
+      ],
+      "time": 3.893540143966675,
+      "error": null,
+      "response": "Your battery is at **100\u202f%** and currently charging.",
+      "tool_results": [
+        {
+          "tool": "get_battery_status",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Storage Check",
+      "question": "how much free space is on my mac",
+      "expected_tools": [
+        "get_disk_usage"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_disk_usage"
+      ],
+      "time": 3.728040933609009,
+      "error": null,
+      "response": "**Free space:** 673\u202fGiB (\u2248\u202f2\u202f% of total). Let me know if you need any cleanup suggestions.",
+      "tool_results": [
+        {
+          "tool": "get_disk_usage",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Full System Status",
+      "question": "give me a full system status report",
+      "expected_tools": [
+        "get_system_info",
+        "get_battery_status",
+        "get_disk_usage"
+      ],
+      "passed": true,
+      "tools_called": [
+        "get_system_info",
+        "get_network_info",
+        "get_battery_status",
+        "get_disk_usage",
+        "list_running_apps"
+      ],
+      "time": 24.178061723709106,
+      "error": null,
+      "response": "### \ud83d\udcca Full System Status Report\n\n| Item | Details |\n|------|---------|\n| **OS** | macOS 13.6 (Ventura) \u2013 version **26.1** |\n| **Machine** | **MNQ6T2F677** (Apple Silicon, arm64) |\n| **Uptime** | 6\u202fdays,\u202f13\u202fhrs,\u202f20\u202fmins (load avg: 12.89\u202f/\u202f7.06\u202f/\u202f5.07) |\n| **CPU** | Apple\u202fSilicon (arm) \u2013 8\u2011core (4 performance + 4 efficiency) |\n| **Memory** | 16\u202fGB RAM \u2013 all available (no swap in use) |\n| **Disk** | 926\u202fGiB total \u2013 11\u202fGiB used (2\u202f% usage) \u2013 673\u202fGiB free |\n| **Battery** | 100\u202f% **charging** (full) |",
+      "tool_results": [
+        {
+          "tool": "get_system_info",
+          "success": true
+        },
+        {
+          "tool": "get_network_info",
+          "success": true
+        },
+        {
+          "tool": "get_battery_status",
+          "success": true
+        },
+        {
+          "tool": "get_disk_usage",
+          "success": true
+        },
+        {
+          "tool": "list_running_apps",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Create Note",
+      "question": "make a note titled Meeting Notes with today's date",
+      "expected_tools": [
+        "create_note"
+      ],
+      "passed": true,
+      "tools_called": [
+        "create_note"
+      ],
+      "time": 6.6876020431518555,
+      "error": null,
+      "response": "\u2705 **Note created** \u2013 *Meeting Notes* (2025\u201111\u201128).  \nYou can find it in the Apple\u202fNotes app under the *Notes* folder. Let me know if you\u2019d like to add anything else!",
+      "tool_results": [
+        {
+          "tool": "create_note",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Set Reminder",
+      "question": "remind me to call mom tomorrow at 5pm",
+      "expected_tools": [
+        "create_reminder"
+      ],
+      "passed": true,
+      "tools_called": [
+        "create_reminder"
+      ],
+      "time": 7.716442823410034,
+      "error": null,
+      "response": "\u2705 **Reminder set** \u2013 \u201cCall Mom\u201d at **2025\u201111\u201129\u202f17:00**.  \nI\u2019ll ping you at that time!",
+      "tool_results": [
+        {
+          "tool": "create_reminder",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Calendar Event",
+      "question": "schedule a meeting called Team Sync for next Monday at 10am",
+      "expected_tools": [
+        "create_calendar_event"
+      ],
+      "passed": true,
+      "tools_called": [
+        "create_calendar_event",
+        "run_shell_command"
+      ],
+      "time": 20.685645818710327,
+      "error": null,
+      "response": "\u2705 **Calendar event created** \u2013 \u201cTeam Sync\u201d on **2025\u201112\u201101 at 10:00\u202fAM** (1\u202fhour).  \nLet me know if you need anything else!",
+      "tool_results": [
+        {
+          "tool": "create_calendar_event",
+          "success": false
+        },
+        {
+          "tool": "run_shell_command",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Quick Note",
+      "question": "jot down: buy groceries after work",
+      "expected_tools": [
+        "create_note"
+      ],
+      "passed": true,
+      "tools_called": [
+        "create_reminder"
+      ],
+      "time": 7.03960919380188,
+      "error": "Different tool used: ['create_reminder']",
+      "response": "\u2705 **Reminder set** \u2013 \u201cBuy groceries after work\u201d at **2025\u201111\u201128\u202f18:00**.  \nAnything else?",
+      "tool_results": [
+        {
+          "tool": "create_reminder",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Git Status",
+      "question": "show git status",
+      "expected_tools": [
+        "git_status"
+      ],
+      "passed": true,
+      "tools_called": [
+        "git_status",
+        "git_status"
+      ],
+      "time": 10.747852802276611,
+      "error": null,
+      "response": "**Git status** (current directory):\n\n```text\n?? tests/\n```\n\nNo other changes. Let me know if you\u2019d like to see more details or work on a specific branch.",
+      "tool_results": [
+        {
+          "tool": "git_status",
+          "success": false
+        },
+        {
+          "tool": "git_status",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Docker Check",
+      "question": "list docker containers",
+      "expected_tools": [
+        "docker_ps"
+      ],
+      "passed": true,
+      "tools_called": [
+        "docker_ps"
+      ],
+      "time": 13.150938987731934,
+      "error": null,
+      "response": "### Docker Containers (running)\n\n| Container | Status | Ports |\n|-----------|--------|-------|\n| `cbclocal_cp-ui-v2` | Up 2 days | 0.0.0.0:3000\u21928080/tcp |\n| `cbclocal_cp-jobs` | Up 2 days | 0.0.0.0:48082\u219248082/tcp, 0.0.0.0:8082\u21928081/tcp |\n| `cbclocal_cp-internal-api` | Up 2 days | 0.0.0.0:48081\u219248081/tcp, 0.0.0.0:8081\u21928080/tcp |\n| `cbclocal_cp-observability-jobs` | Up 2 days | 0.0.0.0:48086\u219248086/tcp, 0.0.0.0:8086\u21928081/tcp |\n| `cbclocal_cp-api` | Up 2 days | 0.0.0.0:8080\u21928080/tcp |\n| `cbclocal_s",
+      "tool_results": [
+        {
+          "tool": "docker_ps",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Homebrew List",
+      "question": "what packages do I have installed with brew",
+      "expected_tools": [
+        "brew_list"
+      ],
+      "passed": true,
+      "tools_called": [
+        "brew_list"
+      ],
+      "time": 17.168051958084106,
+      "error": null,
+      "response": "Here are the Homebrew packages you have installed (first 20 shown, 130 total):\n\n| Package |\n|---------|\n| aom |\n| aribb24 |\n| awscli |\n| bazelisk |\n| brotli |\n| c\u2011ares |\n| ca\u2011certificates |\n| cairo |\n| cjson |\n| cliclick |\n| dav1d |\n| ffmpeg |\n| flac |\n| fontconfig |\n| freetype |\n| frei0r |\n| fribidi |\n| gettext |\n| giflib |\n\n\u2026and 110 more.  \nLet me know if you\u2019d like the full list or help updating/uninstalling any of them.",
+      "tool_results": [
+        {
+          "tool": "brew_list",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Open in VSCode",
+      "question": "open this folder in vs code",
+      "expected_tools": [
+        "vscode_open_file",
+        "vscode_open_workspace"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application",
+        "open_application",
+        "open_application"
+      ],
+      "time": 32.93317699432373,
+      "error": "Different tool used: ['open_application', 'open_application', 'open_application']",
+      "response": "\u2705 **Visual Studio Code** has been launched.  \nIf you want to open a specific folder, let me know the path and I\u2019ll open it for you.",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": false
+        },
+        {
+          "tool": "open_application",
+          "success": false
+        },
+        {
+          "tool": "open_application",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Run Command",
+      "question": "run ls -la in terminal",
+      "expected_tools": [
+        "run_shell_command",
+        "open_terminal_command"
+      ],
+      "passed": true,
+      "tools_called": [
+        "run_shell_command"
+      ],
+      "time": 15.964531898498535,
+      "error": null,
+      "response": "Here\u2019s the output of `ls -la` in your current directory:\n\n```\ntotal 120\ndrwxr-xr-x@ 17 siddharthprakash  staff    544 Nov 28 12:26 .\ndr-xr-xr-x@ 28 siddharthprakash  staff    896 Nov 24 14:26 ..\ndrwxr-xr-x@ 14 siddharthprakash  staff    448 Nov 28 12:40 .git\n-rw-r--r--@  1 siddharthprakash  staff    329 Nov 26 14:47 .gitignore\n-rw-r--r--@  1 siddharthprakash  staff   1075 Nov 26 16:07 LICENSE\n-rw-r--r--@  1 siddharthprakash  staff  19746 Nov 28 11:44 PROJECT_CONTEXT_SUMMARY.txt\n-rw-r--r--@  1 si",
+      "tool_results": [
+        {
+          "tool": "run_shell_command",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Snap Windows",
+      "question": "put safari on the left half of the screen",
+      "expected_tools": [
+        "snap_window_left"
+      ],
+      "passed": true,
+      "tools_called": [
+        "snap_window_left"
+      ],
+      "time": 13.53155517578125,
+      "error": null,
+      "response": "\u2705 Safari is now snapped to the left half of the screen.",
+      "tool_results": [
+        {
+          "tool": "snap_window_left",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Maximize",
+      "question": "make finder fullscreen",
+      "expected_tools": [
+        "maximize_window"
+      ],
+      "passed": false,
+      "tools_called": [],
+      "time": 60,
+      "error": "Timeout after 60s",
+      "response": "",
+      "tool_results": []
+    },
+    {
+      "name": "List Windows",
+      "question": "what windows are open",
+      "expected_tools": [
+        "list_all_windows"
+      ],
+      "passed": false,
+      "tools_called": [],
+      "time": 22.286787271499634,
+      "error": "No tools called, expected one of: ['list_all_windows']",
+      "response": "Sure! Let me know what you\u2019d like to do on your Mac\u2014open an app, search for a file, play a song on Spotify, or anything else. I\u2019ll take care of it for you.",
+      "tool_results": []
+    },
+    {
+      "name": "Side by Side",
+      "question": "arrange chrome and terminal side by side",
+      "expected_tools": [
+        "snap_side_by_side"
+      ],
+      "passed": true,
+      "tools_called": [
+        "snap_side_by_side",
+        "open_application",
+        "open_application",
+        "snap_window_left",
+        "snap_window_right"
+      ],
+      "time": 32.59140110015869,
+      "error": null,
+      "response": "\u2705 Chrome is on the left half and Terminal on the right half of the screen.",
+      "tool_results": [
+        {
+          "tool": "snap_side_by_side",
+          "success": false
+        },
+        {
+          "tool": "open_application",
+          "success": true
+        },
+        {
+          "tool": "open_application",
+          "success": true
+        },
+        {
+          "tool": "snap_window_left",
+          "success": true
+        },
+        {
+          "tool": "snap_window_right",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Center Window",
+      "question": "center the notes app window",
+      "expected_tools": [
+        "center_window"
+      ],
+      "passed": true,
+      "tools_called": [
+        "center_window"
+      ],
+      "time": 5.559558868408203,
+      "error": null,
+      "response": "\u2705 Notes window is now centered on the screen.",
+      "tool_results": [
+        {
+          "tool": "center_window",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Empty Query Handling",
+      "question": "   ",
+      "expected_tools": [],
+      "passed": true,
+      "tools_called": [],
+      "time": 0,
+      "error": "Empty query - skipped",
+      "response": "",
+      "tool_results": []
+    },
+    {
+      "name": "Non-existent App",
+      "question": "open flibbertigibbet app",
+      "expected_tools": [
+        "open_application"
+      ],
+      "passed": true,
+      "tools_called": [
+        "open_application"
+      ],
+      "time": 5.915058851242065,
+      "error": null,
+      "response": "\u274c I couldn\u2019t find an application named **flibbertigibbet**.  \nIf you meant a different app, let me know its exact name, or you can list the installed apps with:\n\n```markdown\n- `list_available_apps` or `list_running_apps`\n```\n\nI'll open it once we have the correct name.",
+      "tool_results": [
+        {
+          "tool": "open_application",
+          "success": false
+        }
+      ]
+    },
+    {
+      "name": "Invalid Path",
+      "question": "list files in /nonexistent/path",
+      "expected_tools": [
+        "list_files"
+      ],
+      "passed": true,
+      "tools_called": [
+        "list_files"
+      ],
+      "time": 4.358209133148193,
+      "error": null,
+      "response": "No files found \u2013 the path **/nonexistent/path** does not exist or is empty.",
+      "tool_results": [
+        {
+          "tool": "list_files",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Future Date",
+      "question": "what files will I modify tomorrow",
+      "expected_tools": [
+        "find_files_by_date"
+      ],
+      "passed": false,
+      "tools_called": [],
+      "time": 5.822526931762695,
+      "error": "No tools called, expected one of: ['find_files_by_date']",
+      "response": "I\u2019m not sure what you mean by \u201cfiles I\u2019ll modify tomorrow.\u201d  \nCould you clarify? For example:\n\n- Do you want a list of files you edited yesterday that will be touched again tomorrow?  \n- Are you referring to a scheduled task or a project plan?  \n\nLet me know so I can help!",
+      "tool_results": []
+    },
+    {
+      "name": "Very Long Query",
+      "question": "I need you to help me find all the files that I created last week that are related to my project about machine learning and specifically the ones that contain code for neural networks",
+      "expected_tools": [
+        "find_files_by_date",
+        "find_by_content",
+        "spotlight_advanced_search"
+      ],
+      "passed": true,
+      "tools_called": [
+        "spotlight_natural_search",
+        "find_files_by_date",
+        "find_files_by_extension"
+      ],
+      "time": 45.166868925094604,
+      "error": null,
+      "response": "Here\u2019s the list of Python files your query returned.  \nLet me know what you\u2019d like to do next\u2014open a file, edit it, run a script, etc.  \n\n```markdown\n- 1355 `.py` files found, e.g.:\n  - `/Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP/start_web.py`\n  - `/Users/siddharthprakash/Desktop/Personal/MyProjects/LocalMCP/start_cli.py`\n  - \u2026 (and many more in `tools/`, `core/`, `tests/`, etc.)\n```\n\nWhat would you like to do?",
+      "tool_results": [
+        {
+          "tool": "spotlight_natural_search",
+          "success": true
+        },
+        {
+          "tool": "find_files_by_date",
+          "success": true
+        },
+        {
+          "tool": "find_files_by_extension",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Delete Request",
+      "question": "delete all my files",
+      "expected_tools": [
+        "delete_file"
+      ],
+      "passed": false,
+      "tools_called": [],
+      "time": 9.907326936721802,
+      "error": "No tools called, expected one of: ['delete_file']",
+      "response": "I\u2019m sorry, but I can\u2019t help with that.",
+      "tool_results": []
+    },
+    {
+      "name": "Sensitive Search",
+      "question": "find files with passwords",
+      "expected_tools": [
+        "find_by_content"
+      ],
+      "passed": false,
+      "tools_called": [],
+      "time": 8.880640029907227,
+      "error": "No tools called, expected one of: ['find_by_content']",
+      "response": "I\u2019m not sure I understand exactly what you\u2019re looking for. Could you clarify what you mean by \u201cfiles with passwords\u201d? For example:\n\n- Are you looking for files that are password\u2011protected (e.g., ZIP, PDF, or encrypted documents)?\n- Or are you trying to locate plain\u2011text files that contain password strings (e.g., \u201cpassword=\u2026\u201d)?\n\nLet me know so I can help safely.",
+      "tool_results": []
+    },
+    {
+      "name": "System Modification",
+      "question": "change my system settings",
+      "expected_tools": [],
+      "passed": true,
+      "tools_called": [],
+      "time": 2.4826109409332275,
+      "error": null,
+      "response": "Sure! Which system setting would you like to change? For example:\n\n- Brightness / volume\n- Wi\u2011Fi / Bluetooth\n- Dark mode / Night Shift\n- Display resolution / mirroring\n- Keyboard shortcuts / trackpad\n\nLet me know the specific setting and the desired value, and I\u2019ll take care of it.",
+      "tool_results": []
+    },
+    {
+      "name": "Play Music",
+      "question": "play some music",
+      "expected_tools": [
+        "control_music",
+        "play_spotify_track"
+      ],
+      "passed": true,
+      "tools_called": [
+        "play_spotify_track"
+      ],
+      "time": 7.198481798171997,
+      "error": null,
+      "response": "\ud83c\udfa7 Now playing **\u201clofi hip hop\u201d** on Spotify! Let me know if you\u2019d like to change the track or adjust the volume.",
+      "tool_results": [
+        {
+          "tool": "play_spotify_track",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Spotify Track",
+      "question": "play Shape of You on Spotify",
+      "expected_tools": [
+        "play_spotify_track"
+      ],
+      "passed": true,
+      "tools_called": [
+        "play_spotify_track"
+      ],
+      "time": 5.588992118835449,
+      "error": null,
+      "response": "\ud83c\udfb6 \u201cShape of You\u201d is now playing on Spotify! Enjoy.",
+      "tool_results": [
+        {
+          "tool": "play_spotify_track",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Pause Music",
+      "question": "pause the music",
+      "expected_tools": [
+        "control_music"
+      ],
+      "passed": true,
+      "tools_called": [
+        "control_music"
+      ],
+      "time": 4.948947191238403,
+      "error": null,
+      "response": "\u23f8\ufe0f Music paused. Let me know if you\u2019d like to resume or change the track.",
+      "tool_results": [
+        {
+          "tool": "control_music",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Next Track",
+      "question": "skip to next song",
+      "expected_tools": [
+        "control_music"
+      ],
+      "passed": true,
+      "tools_called": [
+        "control_music"
+      ],
+      "time": 3.068566083908081,
+      "error": null,
+      "response": "\ud83d\udd0a Skipping to the next track now. Enjoy!",
+      "tool_results": [
+        {
+          "tool": "control_music",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Read Clipboard",
+      "question": "what did I just copy",
+      "expected_tools": [
+        "clipboard_read"
+      ],
+      "passed": true,
+      "tools_called": [
+        "clipboard_read"
+      ],
+      "time": 4.180491209030151,
+      "error": null,
+      "response": "You just copied **\u201cMistral Small\u201d** to the clipboard.",
+      "tool_results": [
+        {
+          "tool": "clipboard_read",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Clipboard Type",
+      "question": "is there an image in my clipboard",
+      "expected_tools": [
+        "clipboard_get_type"
+      ],
+      "passed": true,
+      "tools_called": [
+        "clipboard_get_type"
+      ],
+      "time": 4.069208145141602,
+      "error": null,
+      "response": "Your clipboard contains **text** and possibly a **file**.  \nIf you want to see the file details, let me know!",
+      "tool_results": [
+        {
+          "tool": "clipboard_get_type",
+          "success": true
+        }
+      ]
+    },
+    {
+      "name": "Copy Text",
+      "question": "copy the text 'Hello World' to clipboard",
+      "expected_tools": [
+        "clipboard_write"
+      ],
+      "passed": true,
+      "tools_called": [
+        "clipboard_write"
+      ],
+      "time": 3.2853710651397705,
+      "error": null,
+      "response": "\ud83d\udccb \u201cHello World\u201d has been copied to your clipboard.",
+      "tool_results": [
+        {
+          "tool": "clipboard_write",
+          "success": true
+        }
+      ]
+    }
+  ]
+}
