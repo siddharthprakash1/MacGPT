@@ -1,14 +1,29 @@
-# Getting Started with MacOS AI Commander
+# Getting Started with MacGPT
 
 This guide will walk you through setting up and using your AI-powered macOS automation system.
+
+## ⚡ Quick Install (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/siddharthprakash1/MacGPT/main/install.sh | bash
+```
+
+Then just run:
+```bash
+macgpt
+```
+
+Open **http://localhost:7889** and start chatting! 🎉
+
+---
 
 ## 📋 Prerequisites
 
 ### System Requirements
-- **macOS**: 10.15 (Catalina) or later
-- **Python**: 3.8 or higher
+- **macOS**: 12.0 (Monterey) or later
+- **Python**: 3.9 or higher
 - **RAM**: 8GB minimum (16GB recommended for larger models)
-- **Storage**: 10GB free space (for models)
+- **Storage**: 10GB free space (for AI models)
 
 ### Required Software
 1. **Ollama** - Local AI model server
@@ -19,23 +34,20 @@ This guide will walk you through setting up and using your AI-powered macOS auto
    # Or download from https://ollama.ai
    ```
 
-2. **Python 3** - Usually pre-installed on macOS
+2. **Python 3.9+** - Usually pre-installed on macOS
    ```bash
    # Check version
    python3 --version
    ```
 
-3. **Xcode Command Line Tools** (for pyobjc)
-   ```bash
-   xcode-select --install
-   ```
+## 🚀 Manual Installation
 
-## 🚀 Installation
+If you prefer manual setup instead of the one-liner:
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/siddharthprakash1/MacGPT.git
+cd MacGPT
 ```
 
 ### Step 2: Create Virtual Environment
@@ -63,38 +75,51 @@ pip install pyaudio
 
 ### Step 4: Download AI Model
 ```bash
-# Start Ollama service (in a separate terminal)
+# Start Ollama service (runs automatically after brew install)
 ollama serve
 
-# Pull the recommended model (in your project terminal)
-ollama pull gpt-oss:20b
+# Pull the recommended model
+ollama pull mistral
 
-# Alternative faster model (3B params):
-ollama pull qwen2.5:3b
+# Or for better results:
+ollama pull llama3.1
 ```
 
 **Model Comparison:**
 | Model | Size | Speed | Intelligence | Recommended For |
 |-------|------|-------|--------------|-----------------|
-| `gpt-oss:20b` | 11GB | Slower | Higher | Complex tasks |
-| `qwen2.5:3b` | 1.9GB | Faster | Good | Quick operations |
-| `mistral:latest` | 4.1GB | Medium | Good | Balanced |
+| `mistral` | 4.1GB | Fast | Good | Quick operations |
+| `llama3.1` | 4.7GB | Medium | High | Complex tasks |
+| `llama3.1:70b` | 40GB | Slow | Excellent | Best accuracy |
 
-### Step 5: Configure (Optional)
-Edit `config.json` to customize:
-```json
-{
-  "ollama": {
-    "model": "gpt-oss:20b",
-    "endpoint": "http://localhost:11434",
-    "temperature": 0.7
-  }
-}
+### Step 5: Run MacGPT
+```bash
+# Web UI (recommended)
+python start_web.py
+
+# Or CLI with voice
+python start_cli.py
 ```
 
-## 🎮 Running the System
+## 🎮 Using MacGPT
 
-### Option 1: CLI Mode (with Voice Control)
+### Web UI Mode (Recommended)
+```bash
+python start_web.py
+# Or if you used the installer:
+macgpt
+```
+
+Then open: **http://localhost:7889**
+
+**Features:**
+- ✅ Clean dark theme (ChatGPT/Claude style)
+- ✅ Real-time tool execution display
+- ✅ Conversation history
+- ✅ Tool browser (179 tools)
+- ✅ Mobile responsive
+
+### CLI Mode (with Voice Control)
 ```bash
 python start_cli.py
 ```
@@ -103,81 +128,77 @@ python start_cli.py
 - ✅ Voice input (press Enter, then speak)
 - ✅ Voice responses (toggle with "voice on/off")
 - ✅ Full tool access
-- ✅ Conversation history
 
-**Example Session:**
+## 🛠️ Commands to Try
+
+### 🔍 Spotlight Search (NEW!)
 ```
-🤖 macOS Assistant Ready!
-
-You: open chrome and spotify
-🎯 Opening applications...
-✅ Done!
-
-You: [press Enter]
-🎤 Listening...
-You: (speak) "snap chrome to the left and spotify to the right"
-✅ Windows arranged!
+"Find files over 100MB"
+"Which apps are using the most disk space?"
+"Find files I modified today"
+"Find duplicate files in Downloads"
+"Search for documents containing 'invoice'"
 ```
 
-### Option 2: Web UI Mode
-```bash
-python start_web.py
+### 🎵 Spotify Control (NEW!)
+```
+"Play my liked songs on Spotify"
+"Play Discover Weekly"
+"Pause the music"
+"Skip to next song"
 ```
 
-Then open: `http://localhost:7889`
-
-**Features:**
-- ✅ Beautiful animated interface
-- ✅ Real-time tool execution display
-- ✅ Conversation history
-- ✅ Tool list browser
-- ✅ Mobile responsive
-
-## 🛠️ First Commands to Try
-
-### Easy Commands
-```
-"Send a notification that says Hello World"
-"What's my battery status?"
-"Get system information"
-"Take a screenshot"
-```
-
-### Window Management
+### 🪟 Window Management
 ```
 "Snap Chrome to the left half"
-"Maximize Safari"
+"Open Safari and Notes side by side"
+"Maximize Finder"
 "Center the current window"
-"Show me all open windows"
+"What windows are open?"
 ```
 
-### File Operations
+### 📁 File Operations
 ```
 "List files in my Downloads folder"
 "Compress all PDFs in Desktop"
 "Find all Python files in Documents"
-"Create a folder called Projects in Desktop"
+"Create a folder called Projects"
 ```
 
-### Web & Network
+### ⚡ Quick Actions
 ```
-"Test my internet speed"
-"Scrape news from TechCrunch homepage"
-"Check if google.com is up"
-"Download https://example.com/file.pdf"
-```
-
-### System Control
-```
+"What's my battery status?"
 "Set volume to 50%"
-"Set brightness to 70%"
 "Toggle dark mode"
 "Lock my screen"
+"Show system information"
 ```
 
-## 🎤 Voice Control Guide
+### 📝 Productivity
+```
+"Create a note called Shopping List"
+"Remind me to call mom tomorrow at 5pm"
+"Schedule a meeting for Monday at 10am"
+```
 
-### CLI Voice Setup
+### 🌐 Web & Network
+```
+"Is google.com up?"
+"What's my IP address?"
+"Test my internet speed"
+"Open github.com"
+```
+
+### 👨‍💻 Developer Tools
+```
+"Show git status"
+"List Docker containers"
+"What Homebrew packages do I have?"
+"Open this folder in VS Code"
+```
+
+## 🎤 Voice Control Guide (CLI)
+
 1. Start CLI: `python start_cli.py`
 2. Press **Enter** to activate microphone
 3. Speak your command
@@ -188,189 +209,86 @@ Then open: `http://localhost:7889`
 ```
 You: voice on
 🔊 Voice responses enabled!
-
-You: what time is it?
-🔊 (AI speaks the time)
 ```
 
-**Disable Voice Responses:**
-```
-You: voice off
-🔇 Voice responses disabled.
-```
+## 🔧 Configuration
 
-### Microphone Permissions
-On first run, macOS will ask for microphone permission:
-1. Click "OK" when prompted
-2. Or go to: **System Settings → Privacy & Security → Microphone**
-3. Enable for Terminal/Python
+Edit `config.json` to customize:
 
-## 🔧 Configuration Deep Dive
-
-### Model Selection
-Edit `config.json`:
 ```json
-"ollama": {
-  "model": "gpt-oss:20b"  // Change to your preferred model
+{
+  "ollama": {
+    "model": "mistral",
+    "endpoint": "http://localhost:11434",
+    "temperature": 0.7
+  }
 }
 ```
 
-### Enable/Disable Tools
-Only enable tools you need for faster loading:
+### Change AI Model
 ```json
-"tools": {
-  "enabled": [
-    "send_notification",
-    "clipboard_read",
-    "open_application",
-    // Add only the tools you want
-  ]
-}
+"model": "llama3.1"  // Or any Ollama model
 ```
 
-**To enable all tools**, use:
+### Adjust Creativity
 ```json
-"tools": {
-  "enabled": ["*"]  // All 189 tools
-}
-```
-
-### Temperature Setting
-Controls AI creativity:
-```json
-"temperature": 0.7  // Range: 0.0 (deterministic) to 1.0 (creative)
-```
-
-- **0.0-0.3**: Precise, consistent responses
-- **0.4-0.7**: Balanced (recommended)
-- **0.8-1.0**: Creative, varied responses
-
-### Custom Port (Web UI)
-Edit `start_web.py`:
-```python
-app.run(host='0.0.0.0', port=7889, debug=False)  # Change port here
+"temperature": 0.7  // 0.0 = precise, 1.0 = creative
 ```
 
 ## 🐛 Troubleshooting
 
 ### Ollama Not Running
-**Error**: `Connection refused to localhost:11434`
-
-**Fix**:
 ```bash
-# Start Ollama in separate terminal
+# Start Ollama
 ollama serve
 
-# Or check if already running
-ps aux | grep ollama
+# Check if running
+curl http://localhost:11434/api/tags
 ```
 
 ### Model Not Found
-**Error**: `model 'gpt-oss:20b' not found`
-
-**Fix**:
 ```bash
 # Pull the model
-ollama pull gpt-oss:20b
+ollama pull mistral
 
 # List available models
 ollama list
 ```
 
-### Microphone Not Working (CLI)
-**Error**: `Microphone permission denied`
-
-**Fix**:
-1. Go to **System Settings → Privacy & Security → Microphone**
-2. Enable for Terminal or iTerm
-3. Restart the CLI
-
-### PyAudio Installation Error
-**Error**: `portaudio.h not found`
-
-**Fix**:
-```bash
-# Install PortAudio first
-brew install portaudio
-
-# Then install pyaudio
-pip install pyaudio
-```
-
 ### Tool Execution Fails
-**Error**: Various AppleScript/system errors
+1. Go to **System Settings → Privacy & Security → Accessibility**
+2. Add Terminal/iTerm/Python
+3. Restart MacGPT
 
-**Fix**:
-1. Grant **Accessibility** permissions
-2. Go to: **System Settings → Privacy & Security → Accessibility**
-3. Add Terminal/iTerm/Python
-4. Restart the app
-
-### Slow Response Time
-**Solutions**:
-1. Use a smaller model: `ollama pull qwen2.5:3b`
-2. Update config.json: `"model": "qwen2.5:3b"`
-3. Ensure no other heavy apps are running
-4. Close unused tools in config.json
-
-## 📊 System Monitoring
-
-### Check Ollama Status
-```bash
-curl http://localhost:11434/api/tags
-```
-
-### Monitor Resource Usage
-```bash
-# CPU/Memory usage
-top -pid $(pgrep ollama)
-
-# Model loading status
-ollama list
-```
-
-### View Logs
-```bash
-# CLI logs (stdout)
-python start_cli.py 2>&1 | tee logs/cli.log
-
-# Web UI logs
-python start_web.py 2>&1 | tee logs/web.log
-```
+### Slow Responses
+1. Use a smaller model: `ollama pull mistral`
+2. Close unused applications
+3. Check Activity Monitor for resource usage
 
 ## 🔐 Privacy & Security
 
-### Local-Only Processing
-- ✅ All AI processing happens locally via Ollama
-- ✅ No data sent to cloud services
-- ✅ No external API keys required
-- ✅ Complete privacy
+- ✅ **100% Local** - All AI processing via Ollama on your Mac
+- ✅ **No Cloud** - Nothing sent to external servers
+- ✅ **No API Keys** - No subscriptions needed
+- ✅ **Complete Privacy** - Your data stays on your device
 
 ### Permissions Required
-The system needs these macOS permissions:
-- **Accessibility**: For window management and system control
-- **Automation**: For controlling applications
-- **Microphone**: For voice input (CLI only)
-- **Files & Folders**: For file operations
-
-Grant only what you need - the system works with partial permissions.
-
-## 🎯 Next Steps
-
-1. ✅ **Try Basic Commands** - Get familiar with capabilities
-2. ✅ **Explore Tools** - Run `show all tools` to see what's available
-3. ✅ **Customize Config** - Enable only tools you need
-4. ✅ **Create Shortcuts** - Add alias to `.zshrc` for quick launch
-5. ✅ **Read Advanced Docs** - Check `ADVANCED_USAGE.md`
+- **Accessibility**: Window management, system control
+- **Automation**: Controlling applications
+- **Microphone**: Voice input (CLI only)
+- **Files & Folders**: File operations
 
 ## 🆘 Getting Help
 
-- 📖 **Documentation**: Check other files in `/docs`
-- 🐛 **Issues**: Open a GitHub issue
-- 💬 **Discussions**: Use GitHub Discussions
-- 📧 **Contact**: (Add your contact info)
+- 📖 **Docs**: Check other files in `/docs`
+- 🐛 **Issues**: [GitHub Issues](https://github.com/siddharthprakash1/MacGPT/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/siddharthprakash1/MacGPT/discussions)
+- 👤 **LinkedIn**: [Siddharth Prakash](https://www.linkedin.com/in/siddharth-prakash-771596241/)
 
 ---
 
-**Ready to automate?** Start with: `python start_cli.py` 🚀
+**Ready to automate your Mac?** 🚀
 
+```bash
+macgpt
+```
