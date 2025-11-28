@@ -263,7 +263,7 @@ If you find this project useful, please consider giving it a star! ⭐
 
 - **GitHub Issues**: Bug reports and feature requests
 - **Discussions**: Questions and community chat
-- **LinkedIn**: [Your LinkedIn Profile]
+- **LinkedIn**: https://www.linkedin.com/in/siddharth-prakash-771596241/
 
 ---
 
