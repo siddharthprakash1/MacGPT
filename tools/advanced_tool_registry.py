@@ -16,6 +16,16 @@ from tools.advanced_tools import (
     spotify_set_volume, spotify_get_volume, spotify_toggle_shuffle, spotify_toggle_repeat,
     spotify_play_artist, spotify_play_album, spotify_play_playlist,
     spotify_seek, spotify_get_status, spotify_play_genre, spotify_play_mood,
+    # Browser tools
+    browser_get_current_url, browser_get_current_title, browser_get_all_tabs,
+    browser_new_tab, browser_close_tab, browser_close_all_tabs,
+    browser_refresh, browser_go_back, browser_go_forward, browser_switch_tab,
+    browser_open_incognito, browser_search, browser_zoom, browser_find_on_page,
+    browser_bookmark_page, browser_open_devtools, browser_screenshot_page,
+    browser_open_multiple_urls, browser_duplicate_tab, browser_mute_tab, browser_pin_tab,
+    browser_clear_history, browser_view_source, browser_print_page, browser_fullscreen,
+    browser_next_tab, browser_previous_tab, browser_reopen_closed_tab,
+    browser_reading_mode, browser_save_page, browser_get_tab_count, browser_scroll,
     run_shell_command
 )
 
@@ -735,6 +745,403 @@ ADVANCED_TOOLS = {
             "required": ["mood"]
         },
         "function": spotify_play_mood
+    },
+    
+    # BROWSER TOOLS
+    "browser_get_current_url": {
+        "description": "Get URL of current tab in Chrome, Brave, Safari, or Arc",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari, arc", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_get_current_url
+    },
+    
+    "browser_get_current_title": {
+        "description": "Get title of current browser tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_get_current_title
+    },
+    
+    "browser_get_all_tabs": {
+        "description": "Get list of all open tabs with URLs and titles",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_get_all_tabs
+    },
+    
+    "browser_new_tab": {
+        "description": "Open a new tab, optionally with URL. Use for: new tab, open new tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "URL to open (empty for blank tab)", "default": ""},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_new_tab
+    },
+    
+    "browser_close_tab": {
+        "description": "Close the current browser tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_close_tab
+    },
+    
+    "browser_close_all_tabs": {
+        "description": "Close all tabs in the browser",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_close_all_tabs
+    },
+    
+    "browser_refresh": {
+        "description": "Refresh/reload the current page",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_refresh
+    },
+    
+    "browser_go_back": {
+        "description": "Go back to previous page in browser",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_go_back
+    },
+    
+    "browser_go_forward": {
+        "description": "Go forward to next page in browser",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_go_forward
+    },
+    
+    "browser_switch_tab": {
+        "description": "Switch to a specific tab by number (1-based)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "tab_index": {"type": "integer", "description": "Tab number (1 for first tab)"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": ["tab_index"]
+        },
+        "function": browser_switch_tab
+    },
+    
+    "browser_open_incognito": {
+        "description": "Open incognito/private browsing window",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Optional URL to open", "default": ""},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_open_incognito
+    },
+    
+    "browser_search": {
+        "description": "Search using Google, Bing, DuckDuckGo, YouTube, Amazon, or GitHub",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"},
+                "engine": {"type": "string", "description": "Search engine: google, bing, duckduckgo, youtube, amazon, github", "default": "google"}
+            },
+            "required": ["query"]
+        },
+        "function": browser_search
+    },
+    
+    "browser_zoom": {
+        "description": "Zoom in, out, or reset zoom on page",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "direction": {"type": "string", "description": "Zoom direction: in, out, reset"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": ["direction"]
+        },
+        "function": browser_zoom
+    },
+    
+    "browser_find_on_page": {
+        "description": "Find text on the current page (Cmd+F)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to find"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": ["text"]
+        },
+        "function": browser_find_on_page
+    },
+    
+    "browser_bookmark_page": {
+        "description": "Bookmark the current page (Cmd+D)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_bookmark_page
+    },
+    
+    "browser_open_devtools": {
+        "description": "Open browser developer tools",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_open_devtools
+    },
+    
+    "browser_screenshot_page": {
+        "description": "Take screenshot of browser window",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filepath": {"type": "string", "description": "Save path", "default": "~/Desktop/screenshot.png"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_screenshot_page
+    },
+    
+    "browser_open_multiple_urls": {
+        "description": "Open multiple URLs in new tabs at once",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "urls": {"type": "array", "items": {"type": "string"}, "description": "List of URLs to open"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": ["urls"]
+        },
+        "function": browser_open_multiple_urls
+    },
+    
+    "browser_duplicate_tab": {
+        "description": "Duplicate the current tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_duplicate_tab
+    },
+    
+    "browser_mute_tab": {
+        "description": "Mute/unmute the current tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_mute_tab
+    },
+    
+    "browser_pin_tab": {
+        "description": "Pin the current tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_pin_tab
+    },
+    
+    "browser_clear_history": {
+        "description": "Open clear browsing data dialog",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_clear_history
+    },
+    
+    "browser_view_source": {
+        "description": "View page source code",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_view_source
+    },
+    
+    "browser_print_page": {
+        "description": "Open print dialog for current page",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_print_page
+    },
+    
+    "browser_fullscreen": {
+        "description": "Toggle fullscreen mode",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_fullscreen
+    },
+    
+    "browser_next_tab": {
+        "description": "Switch to next tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_next_tab
+    },
+    
+    "browser_previous_tab": {
+        "description": "Switch to previous tab",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_previous_tab
+    },
+    
+    "browser_reopen_closed_tab": {
+        "description": "Reopen the last closed tab (Cmd+Shift+T)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_reopen_closed_tab
+    },
+    
+    "browser_reading_mode": {
+        "description": "Toggle Safari Reader mode for distraction-free reading",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser (Safari only)", "default": "safari"}
+            },
+            "required": []
+        },
+        "function": browser_reading_mode
+    },
+    
+    "browser_save_page": {
+        "description": "Save the current page (Cmd+S)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filepath": {"type": "string", "description": "Save path", "default": "~/Desktop/page.html"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_save_page
+    },
+    
+    "browser_get_tab_count": {
+        "description": "Get number of open tabs in browser",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": []
+        },
+        "function": browser_get_tab_count
+    },
+    
+    "browser_scroll": {
+        "description": "Scroll the page up, down, to top, or to bottom",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "direction": {"type": "string", "description": "Scroll direction: up, down, top, bottom"},
+                "amount": {"type": "string", "description": "Amount: page, half, or small", "default": "page"},
+                "browser": {"type": "string", "description": "Browser: chrome, brave, safari", "default": "chrome"}
+            },
+            "required": ["direction"]
+        },
+        "function": browser_scroll
     },
     
     # SHELL COMMANDS

@@ -116,7 +116,7 @@ Then open: **http://localhost:7889**
 - ✅ Clean dark theme (ChatGPT/Claude style)
 - ✅ Real-time tool execution display
 - ✅ Conversation history
-- ✅ Tool browser (179 tools)
+- ✅ Tool browser (228 tools)
 - ✅ Mobile responsive
 
 ### CLI Mode (with Voice Control)
@@ -140,12 +140,32 @@ python start_cli.py
 "Search for documents containing 'invoice'"
 ```
 
-### 🎵 Spotify Control (NEW!)
+### 🎵 Spotify Control (20 tools!)
 ```
-"Play my liked songs on Spotify"
-"Play Discover Weekly"
-"Pause the music"
+"Play my liked songs"
+"Play Taylor Swift"
+"Play some chill music"
+"What song is playing?"
 "Skip to next song"
+"Set Spotify volume to 50"
+"Turn on shuffle"
+"Play the album Abbey Road"
+"Play workout music"
+```
+
+### 🌐 Browser Control (32 tools!)
+```
+"Open new tab with github.com"
+"What tabs do I have open?"
+"Close this tab"
+"Search YouTube for tutorials"
+"Open incognito window"
+"Refresh the page"
+"Go back"
+"Find 'password' on this page"
+"Zoom in"
+"Bookmark this page"
+"Open developer tools"
 ```
 
 ### 🪟 Window Management

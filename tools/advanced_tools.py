@@ -1106,6 +1106,1077 @@ def get_current_song() -> dict:
         }
 
 
+# ==================== BROWSER TOOLS ====================
+
+def browser_get_current_url(browser: str = "chrome") -> dict:
+    """
+    Get the URL of the current tab
+    
+    Args:
+        browser: chrome, brave, safari, firefox, arc
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "firefox": "Firefox",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = 'tell application "Safari" to return URL of front document'
+        else:
+            script = f'tell application "{app_name}" to return URL of active tab of front window'
+        
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        return {"success": True, "browser": app_name, "url": result.stdout.strip()}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_get_current_title(browser: str = "chrome") -> dict:
+    """
+    Get the title of the current tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = 'tell application "Safari" to return name of front document'
+        else:
+            script = f'tell application "{app_name}" to return title of active tab of front window'
+        
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        return {"success": True, "browser": app_name, "title": result.stdout.strip()}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_get_all_tabs(browser: str = "chrome") -> dict:
+    """
+    Get list of all open tabs with their URLs and titles
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari"
+                set tabList to {}
+                repeat with w in windows
+                    repeat with t in tabs of w
+                        set end of tabList to (name of t & "|" & URL of t)
+                    end repeat
+                end repeat
+                return tabList
+            end tell
+            '''
+        else:
+            script = f'''
+            tell application "{app_name}"
+                set tabList to {{}}
+                repeat with w in windows
+                    repeat with t in tabs of w
+                        set end of tabList to (title of t & "|" & URL of t)
+                    end repeat
+                end repeat
+                return tabList
+            end tell
+            '''
+        
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=10)
+        raw = result.stdout.strip()
+        
+        tabs = []
+        if raw:
+            for item in raw.split(", "):
+                if "|" in item:
+                    parts = item.split("|")
+                    tabs.append({"title": parts[0], "url": parts[1] if len(parts) > 1 else ""})
+        
+        return {"success": True, "browser": app_name, "tab_count": len(tabs), "tabs": tabs}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_new_tab(url: str = "", browser: str = "chrome") -> dict:
+    """
+    Open a new tab, optionally with a URL
+    
+    Args:
+        url: URL to open (empty for blank tab)
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if url:
+            if app_name == "Safari":
+                script = f'''
+                tell application "Safari"
+                    activate
+                    tell front window to set current tab to (make new tab with properties {{URL:"{url}"}})
+                end tell
+                '''
+            else:
+                script = f'''
+                tell application "{app_name}"
+                    activate
+                    tell front window to make new tab with properties {{URL:"{url}"}}
+                end tell
+                '''
+        else:
+            if app_name == "Safari":
+                script = f'''
+                tell application "Safari"
+                    activate
+                    tell front window to set current tab to (make new tab)
+                end tell
+                '''
+            else:
+                script = f'''
+                tell application "{app_name}"
+                    activate
+                    tell front window to make new tab
+                end tell
+                '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "url": url or "blank", "message": f"New tab opened in {app_name}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_close_tab(browser: str = "chrome") -> dict:
+    """
+    Close the current tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = 'tell application "Safari" to close current tab of front window'
+        else:
+            script = f'tell application "{app_name}" to close active tab of front window'
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Tab closed"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_close_all_tabs(browser: str = "chrome") -> dict:
+    """
+    Close all tabs in the browser
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari"
+                repeat with w in windows
+                    close tabs of w
+                end repeat
+            end tell
+            '''
+        else:
+            script = f'''
+            tell application "{app_name}"
+                repeat with w in windows
+                    close tabs of w
+                end repeat
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "All tabs closed"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_refresh(browser: str = "chrome") -> dict:
+    """
+    Refresh the current tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        # Use keyboard shortcut Cmd+R
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "r" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Page refreshed"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_go_back(browser: str = "chrome") -> dict:
+    """
+    Go back to previous page
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "[" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Went back"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_go_forward(browser: str = "chrome") -> dict:
+    """
+    Go forward to next page
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "]" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Went forward"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_switch_tab(tab_index: int, browser: str = "chrome") -> dict:
+    """
+    Switch to a specific tab by index (1-based)
+    
+    Args:
+        tab_index: Tab number (1 for first tab)
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = f'''
+            tell application "Safari"
+                activate
+                set current tab of front window to tab {tab_index} of front window
+            end tell
+            '''
+        else:
+            script = f'''
+            tell application "{app_name}"
+                activate
+                set active tab index of front window to {tab_index}
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "tab": tab_index, "message": f"Switched to tab {tab_index}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_open_incognito(url: str = "", browser: str = "chrome") -> dict:
+    """
+    Open incognito/private window
+    
+    Args:
+        url: Optional URL to open
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari"
+                activate
+                tell application "System Events" to keystroke "n" using {command down, shift down}
+            end tell
+            '''
+        else:
+            # Chrome/Brave incognito
+            script = f'''
+            tell application "{app_name}"
+                activate
+                tell application "System Events" to keystroke "n" using {{command down, shift down}}
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        
+        if url:
+            import time
+            time.sleep(0.5)
+            script2 = f'''
+            tell application "{app_name}"
+                set URL of active tab of front window to "{url}"
+            end tell
+            '''
+            subprocess.run(['osascript', '-e', script2], timeout=5)
+        
+        return {"success": True, "browser": app_name, "mode": "incognito/private", "url": url or "blank"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_search(query: str, browser: str = "chrome", engine: str = "google") -> dict:
+    """
+    Search using browser's search
+    
+    Args:
+        query: Search query
+        browser: chrome, brave, safari
+        engine: google, bing, duckduckgo, youtube
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        # Search engine URLs
+        engines = {
+            "google": f"https://www.google.com/search?q={query.replace(' ', '+')}",
+            "bing": f"https://www.bing.com/search?q={query.replace(' ', '+')}",
+            "duckduckgo": f"https://duckduckgo.com/?q={query.replace(' ', '+')}",
+            "ddg": f"https://duckduckgo.com/?q={query.replace(' ', '+')}",
+            "youtube": f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}",
+            "yt": f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}",
+            "amazon": f"https://www.amazon.com/s?k={query.replace(' ', '+')}",
+            "github": f"https://github.com/search?q={query.replace(' ', '+')}",
+        }
+        
+        url = engines.get(engine.lower(), engines["google"])
+        
+        if app_name == "Safari":
+            script = f'tell application "Safari" to open location "{url}"'
+        else:
+            script = f'tell application "{app_name}" to open location "{url}"'
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "engine": engine, "query": query, "url": url}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_zoom(direction: str, browser: str = "chrome") -> dict:
+    """
+    Zoom in or out on the page
+    
+    Args:
+        direction: in, out, or reset
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if direction.lower() == "in":
+            key = "+"
+        elif direction.lower() == "out":
+            key = "-"
+        else:  # reset
+            key = "0"
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "{key}" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "zoom": direction}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_find_on_page(text: str, browser: str = "chrome") -> dict:
+    """
+    Open find dialog and search for text on page
+    
+    Args:
+        text: Text to find
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        escaped = text.replace('"', '\\"')
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events"
+            keystroke "f" using command down
+            delay 0.3
+            keystroke "{escaped}"
+        end tell
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "searching_for": text}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_bookmark_page(browser: str = "chrome") -> dict:
+    """
+    Bookmark the current page
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "d" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Bookmark dialog opened"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_open_devtools(browser: str = "chrome") -> dict:
+    """
+    Open developer tools
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            # Safari uses Cmd+Option+I
+            script = '''
+            tell application "Safari" to activate
+            tell application "System Events" to keystroke "i" using {command down, option down}
+            '''
+        else:
+            # Chrome/Brave use Cmd+Option+I or F12
+            script = f'''
+            tell application "{app_name}" to activate
+            tell application "System Events" to keystroke "i" using {{command down, option down}}
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Developer tools opened"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_screenshot_page(filepath: str = "~/Desktop/screenshot.png", browser: str = "chrome") -> dict:
+    """
+    Take a screenshot of the current browser window
+    
+    Args:
+        filepath: Where to save the screenshot
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        expanded_path = os.path.expanduser(filepath)
+        
+        # Get window ID and capture
+        script = f'''
+        tell application "{app_name}"
+            activate
+            set windowID to id of front window
+        end tell
+        return windowID
+        '''
+        
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        window_id = result.stdout.strip()
+        
+        # Use screencapture
+        subprocess.run(['screencapture', '-l', window_id, expanded_path], check=True, timeout=10)
+        
+        return {"success": True, "browser": app_name, "filepath": expanded_path, "message": "Screenshot saved"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_open_multiple_urls(urls: list, browser: str = "chrome") -> dict:
+    """
+    Open multiple URLs in new tabs
+    
+    Args:
+        urls: List of URLs to open
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari",
+            "arc": "Arc"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        opened = []
+        for url in urls:
+            if app_name == "Safari":
+                script = f'''
+                tell application "Safari"
+                    activate
+                    tell front window to make new tab with properties {{URL:"{url}"}}
+                end tell
+                '''
+            else:
+                script = f'''
+                tell application "{app_name}"
+                    activate
+                    tell front window to make new tab with properties {{URL:"{url}"}}
+                end tell
+                '''
+            subprocess.run(['osascript', '-e', script], timeout=5)
+            opened.append(url)
+        
+        return {"success": True, "browser": app_name, "urls_opened": len(opened), "urls": opened}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_duplicate_tab(browser: str = "chrome") -> dict:
+    """
+    Duplicate the current tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        # Get current URL and open in new tab
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari"
+                set currentURL to URL of front document
+                tell front window to make new tab with properties {URL:currentURL}
+            end tell
+            '''
+        else:
+            script = f'''
+            tell application "{app_name}"
+                set currentURL to URL of active tab of front window
+                tell front window to make new tab with properties {{URL:currentURL}}
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Tab duplicated"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_mute_tab(browser: str = "chrome") -> dict:
+    """
+    Mute the current tab
+    
+    Args:
+        browser: chrome, brave
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        # Right-click tab and mute (using keyboard shortcut for Chrome)
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "m" using {{control down, shift down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Tab mute toggled"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_pin_tab(browser: str = "chrome") -> dict:
+    """
+    Pin the current tab
+    
+    Args:
+        browser: chrome, brave
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        # Use menu to pin tab
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events"
+            click menu item "Pin Tab" of menu "Tab" of menu bar 1 of process "{app_name}"
+        end tell
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Tab pinned"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_clear_history(browser: str = "chrome") -> dict:
+    """
+    Open clear browsing data dialog
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari" to activate
+            tell application "System Events"
+                click menu item "Clear History…" of menu "History" of menu bar 1 of process "Safari"
+            end tell
+            '''
+        else:
+            # Chrome/Brave: Cmd+Shift+Delete
+            script = f'''
+            tell application "{app_name}" to activate
+            tell application "System Events" to keystroke (ASCII character 8) using {{command down, shift down}}
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Clear history dialog opened"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_view_source(browser: str = "chrome") -> dict:
+    """
+    View page source code
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "u" using {{command down, option down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Viewing page source"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_print_page(browser: str = "chrome") -> dict:
+    """
+    Open print dialog for current page
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "p" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Print dialog opened"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_fullscreen(browser: str = "chrome") -> dict:
+    """
+    Toggle fullscreen mode
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "f" using {{command down, control down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Fullscreen toggled"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_next_tab(browser: str = "chrome") -> dict:
+    """
+    Switch to next tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke tab using {{control down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Switched to next tab"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_previous_tab(browser: str = "chrome") -> dict:
+    """
+    Switch to previous tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke tab using {{control down, shift down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Switched to previous tab"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_reopen_closed_tab(browser: str = "chrome") -> dict:
+    """
+    Reopen the last closed tab
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "t" using {{command down, shift down}}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Reopened last closed tab"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_reading_mode(browser: str = "safari") -> dict:
+    """
+    Toggle reading mode (Safari Reader)
+    
+    Args:
+        browser: safari (only Safari supports this natively)
+    """
+    try:
+        script = '''
+        tell application "Safari" to activate
+        tell application "System Events" to keystroke "r" using {command down, shift down}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": "Safari", "message": "Reading mode toggled"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_save_page(filepath: str = "~/Desktop/page.html", browser: str = "chrome") -> dict:
+    """
+    Save the current page
+    
+    Args:
+        filepath: Where to save
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to keystroke "s" using command down
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "message": "Save dialog opened"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_get_tab_count(browser: str = "chrome") -> dict:
+    """
+    Get the number of open tabs
+    
+    Args:
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        if app_name == "Safari":
+            script = '''
+            tell application "Safari"
+                set tabCount to 0
+                repeat with w in windows
+                    set tabCount to tabCount + (count of tabs of w)
+                end repeat
+                return tabCount
+            end tell
+            '''
+        else:
+            script = f'''
+            tell application "{app_name}"
+                set tabCount to 0
+                repeat with w in windows
+                    set tabCount to tabCount + (count of tabs of w)
+                end repeat
+                return tabCount
+            end tell
+            '''
+        
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        count = int(result.stdout.strip())
+        return {"success": True, "browser": app_name, "tab_count": count}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def browser_scroll(direction: str, amount: str = "page", browser: str = "chrome") -> dict:
+    """
+    Scroll the page
+    
+    Args:
+        direction: up, down, top, bottom
+        amount: page, half, or pixels
+        browser: chrome, brave, safari
+    """
+    try:
+        browser_apps = {
+            "chrome": "Google Chrome",
+            "brave": "Brave Browser",
+            "safari": "Safari"
+        }
+        app_name = browser_apps.get(browser.lower(), browser)
+        
+        direction = direction.lower()
+        
+        if direction == "top":
+            key_script = 'keystroke (ASCII character 1) using command down'  # Cmd+Home
+        elif direction == "bottom":
+            key_script = 'keystroke (ASCII character 4) using command down'  # Cmd+End
+        elif direction == "down":
+            if amount == "page":
+                key_script = 'key code 121'  # Page Down
+            else:
+                key_script = 'key code 125'  # Down Arrow
+        else:  # up
+            if amount == "page":
+                key_script = 'key code 116'  # Page Up
+            else:
+                key_script = 'key code 126'  # Up Arrow
+        
+        script = f'''
+        tell application "{app_name}" to activate
+        tell application "System Events" to {key_script}
+        '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "browser": app_name, "scrolled": direction}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 # ==================== SMART HELPERS ====================
 
 def run_shell_command(command: str, timeout: int = 30) -> dict:

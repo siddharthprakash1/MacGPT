@@ -4,10 +4,10 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Ollama](https://img.shields.io/badge/Ollama-Required-green.svg)](https://ollama.ai)
-[![Tools: 179](https://img.shields.io/badge/Tools-179-purple.svg)]()
+[![Tools: 228](https://img.shields.io/badge/Tools-228-purple.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Transform your Mac into an AI-powered automation machine. Use natural language to control windows, manage files, search with Spotlight, play Spotify, and execute 179+ system operations - all running locally with complete privacy.
+Transform your Mac into an AI-powered automation machine. Use natural language to control windows, manage files, search with Spotlight, play Spotify, control browsers, and execute 228+ system operations - all running locally with complete privacy.
 
 ## ⚡ One-Line Install
 
@@ -27,20 +27,32 @@ Open **http://localhost:7889** and start chatting! 🎉
 - 🧠 **100% Local AI** - Powered by Ollama, no cloud, complete privacy
 - 🌐 **Modern Web UI** - Clean dark theme inspired by ChatGPT/Claude
 - 🔍 **Spotlight Search** - Find files, apps, duplicates with natural language
-- 🎵 **Spotify Control** - Play liked songs, playlists directly in the app
+- 🎵 **Spotify Control** - 20 tools for complete music control
+- 🌐 **Browser Control** - 32 tools for Chrome, Brave, Safari, Arc
 - 🪟 **Window Management** - Snap, resize, arrange windows by voice
-- 📱 **179 Tools** - Comprehensive automation across 15 categories
+- 📱 **228 Tools** - Comprehensive automation across 17 categories
 - 🎤 **Voice Control** - Speak commands naturally (CLI mode)
 
 ## 🎬 Quick Demo
 
 ```bash
-# Examples of what you can say:
+# File & System
 "Find files over 100MB"
 "Which apps are using the most disk space?"
-"Play my liked songs on Spotify"
-"Open Chrome and Safari side by side"
 "What's my battery level?"
+
+# Spotify Control
+"Play my liked songs"
+"Play some chill music"
+"What song is playing?"
+
+# Browser Control
+"Open new tab with github.com"
+"Search YouTube for coding tutorials"
+"How many tabs do I have open?"
+
+# Productivity
+"Open Chrome and Safari side by side"
 "Create a reminder to call mom tomorrow"
 ```
 
@@ -89,12 +101,27 @@ Powerful file search using macOS Spotlight
 "Find files I modified today" → Recent user files (no system files)
 ```
 
-### 🎵 Spotify Control (3 tools)
-Control Spotify directly from the app
+### 🎵 Spotify Control (20 tools)
+Complete Spotify control - playback, playlists, artists, moods
 ```
 "Play my liked songs" → Plays from Spotify app
-"Play Discover Weekly" → Starts playlist
-"Pause the music" → Controls playback
+"Play Taylor Swift" → Plays artist's music
+"Skip to next song" → Track control
+"Play chill music" → Mood-based playlists
+"What song is playing?" → Get track info
+"Set Spotify volume to 50" → Volume control
+```
+
+### 🌐 Browser Control (32 tools)
+Control Chrome, Brave, Safari, Arc - tabs, navigation, search
+```
+"Open new tab with github.com" → Opens in browser
+"What tabs do I have open?" → Lists all tabs
+"Search YouTube for tutorials" → Direct search
+"Close this tab" → Tab management
+"Refresh the page" → Navigation
+"Open incognito window" → Privacy mode
+"Find 'password' on page" → Page search
 ```
 
 ### 🎬 Screen & Media (8 tools)
@@ -106,7 +133,7 @@ Record screen, convert images/videos, resize media
 
 **+ 9 more categories**: Clipboard, Display, Time Machine, AirDrop, App Integrations, Quick Tools, System Control
 
-[**→ See all 189 tools**](docs/README.md)
+[**→ See all 228 tools**](docs/README.md)
 
 ## 📚 Comprehensive Documentation
 
@@ -200,7 +227,7 @@ Modern, animated UI on `http://localhost:7889`:
 └──────────────┬──────────────┘
                │
 ┌──────────────▼──────────────┐
-│      189 Tool Modules       │
+│      228 Tool Modules       │
 │  Category-based Organization│
 └──────────────┬──────────────┘
                │
