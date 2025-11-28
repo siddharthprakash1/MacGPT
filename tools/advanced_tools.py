@@ -703,6 +703,370 @@ def spotify_play_library(item: str = "liked") -> dict:
         }
 
 
+def spotify_get_current_track() -> dict:
+    """
+    Get information about the currently playing track on Spotify
+    
+    Returns:
+        dict: Track name, artist, album, duration, position
+    """
+    try:
+        script = '''
+        tell application "Spotify"
+            if player state is playing or player state is paused then
+                set trackName to name of current track
+                set trackArtist to artist of current track
+                set trackAlbum to album of current track
+                set trackDuration to duration of current track
+                set trackPosition to player position
+                set isPlaying to (player state is playing)
+                return trackName & "|" & trackArtist & "|" & trackAlbum & "|" & trackDuration & "|" & trackPosition & "|" & isPlaying
+            else
+                return "NOT_PLAYING"
+            end if
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        output = result.stdout.strip()
+        
+        if output == "NOT_PLAYING":
+            return {"success": True, "playing": False, "message": "Spotify is not playing anything"}
+        
+        parts = output.split("|")
+        if len(parts) >= 6:
+            duration_ms = int(float(parts[3]))
+            position_ms = int(float(parts[4]) * 1000)
+            return {
+                "success": True,
+                "playing": parts[5] == "true",
+                "track": parts[0],
+                "artist": parts[1],
+                "album": parts[2],
+                "duration": f"{duration_ms // 60000}:{(duration_ms // 1000) % 60:02d}",
+                "position": f"{position_ms // 60000}:{(position_ms // 1000) % 60:02d}",
+                "progress_percent": round((position_ms / duration_ms) * 100, 1) if duration_ms > 0 else 0
+            }
+        return {"success": True, "raw": output}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_next_track() -> dict:
+    """Skip to the next track on Spotify"""
+    try:
+        script = '''
+        tell application "Spotify"
+            next track
+            delay 0.5
+            return name of current track & " by " & artist of current track
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        return {"success": True, "now_playing": result.stdout.strip(), "message": "Skipped to next track"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_previous_track() -> dict:
+    """Go back to the previous track on Spotify"""
+    try:
+        script = '''
+        tell application "Spotify"
+            previous track
+            delay 0.5
+            return name of current track & " by " & artist of current track
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        return {"success": True, "now_playing": result.stdout.strip(), "message": "Went to previous track"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_pause() -> dict:
+    """Pause Spotify playback"""
+    try:
+        script = 'tell application "Spotify" to pause'
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "message": "Spotify paused"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_resume() -> dict:
+    """Resume Spotify playback"""
+    try:
+        script = 'tell application "Spotify" to play'
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "message": "Spotify resumed"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_toggle_playback() -> dict:
+    """Toggle play/pause on Spotify"""
+    try:
+        script = 'tell application "Spotify" to playpause'
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "message": "Toggled Spotify playback"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_set_volume(volume: int) -> dict:
+    """
+    Set Spotify volume (0-100)
+    
+    Args:
+        volume: Volume level 0-100
+    """
+    try:
+        volume = max(0, min(100, volume))
+        script = f'tell application "Spotify" to set sound volume to {volume}'
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "volume": volume, "message": f"Spotify volume set to {volume}%"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_get_volume() -> dict:
+    """Get current Spotify volume"""
+    try:
+        script = 'tell application "Spotify" to return sound volume'
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        volume = int(result.stdout.strip())
+        return {"success": True, "volume": volume, "message": f"Spotify volume is {volume}%"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_toggle_shuffle() -> dict:
+    """Toggle shuffle mode on Spotify"""
+    try:
+        script = '''
+        tell application "Spotify"
+            set shuffling to not shuffling
+            return shuffling
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        is_shuffling = result.stdout.strip() == "true"
+        return {"success": True, "shuffle": is_shuffling, "message": f"Shuffle {'enabled' if is_shuffling else 'disabled'}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_toggle_repeat() -> dict:
+    """Toggle repeat mode on Spotify"""
+    try:
+        script = '''
+        tell application "Spotify"
+            set repeating to not repeating
+            return repeating
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        is_repeating = result.stdout.strip() == "true"
+        return {"success": True, "repeat": is_repeating, "message": f"Repeat {'enabled' if is_repeating else 'disabled'}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_play_artist(artist_name: str) -> dict:
+    """
+    Play music by a specific artist on Spotify
+    
+    Args:
+        artist_name: Name of the artist
+    """
+    try:
+        import time
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1)
+        
+        escaped = artist_name.replace('"', '\\"')
+        script = f'''
+        tell application "Spotify"
+            activate
+            play track "spotify:search:artist:{escaped}"
+        end tell
+        '''
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "artist": artist_name, "message": f"Playing music by {artist_name}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_play_album(album_name: str, artist: str = "") -> dict:
+    """
+    Play a specific album on Spotify
+    
+    Args:
+        album_name: Name of the album
+        artist: Optional artist name for better matching
+    """
+    try:
+        import time
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1)
+        
+        query = f"{album_name} {artist}".strip().replace('"', '\\"')
+        script = f'''
+        tell application "Spotify"
+            activate
+            play track "spotify:search:album:{query}"
+        end tell
+        '''
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "album": album_name, "artist": artist, "message": f"Playing album {album_name}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_play_playlist(playlist_name: str) -> dict:
+    """
+    Play a playlist by name on Spotify
+    
+    Args:
+        playlist_name: Name of the playlist to play
+    """
+    try:
+        import time
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1)
+        
+        escaped = playlist_name.replace('"', '\\"')
+        script = f'''
+        tell application "Spotify"
+            activate
+            play track "spotify:search:playlist:{escaped}"
+        end tell
+        '''
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "playlist": playlist_name, "message": f"Playing playlist {playlist_name}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_seek(position_seconds: int) -> dict:
+    """
+    Seek to a position in the current track
+    
+    Args:
+        position_seconds: Position in seconds to seek to
+    """
+    try:
+        script = f'tell application "Spotify" to set player position to {position_seconds}'
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        mins = position_seconds // 60
+        secs = position_seconds % 60
+        return {"success": True, "position": f"{mins}:{secs:02d}", "message": f"Seeked to {mins}:{secs:02d}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_get_status() -> dict:
+    """Get full Spotify playback status including shuffle, repeat, volume"""
+    try:
+        script = '''
+        tell application "Spotify"
+            set playerState to player state as string
+            set vol to sound volume
+            set shuf to shuffling
+            set rep to repeating
+            if playerState is "playing" or playerState is "paused" then
+                set trackName to name of current track
+                set trackArtist to artist of current track
+                return playerState & "|" & trackName & "|" & trackArtist & "|" & vol & "|" & shuf & "|" & rep
+            else
+                return playerState & "||||" & vol & "|" & shuf & "|" & rep
+            end if
+        end tell
+        '''
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=5)
+        parts = result.stdout.strip().split("|")
+        
+        return {
+            "success": True,
+            "state": parts[0] if len(parts) > 0 else "unknown",
+            "track": parts[1] if len(parts) > 1 and parts[1] else None,
+            "artist": parts[2] if len(parts) > 2 and parts[2] else None,
+            "volume": int(parts[3]) if len(parts) > 3 and parts[3] else 0,
+            "shuffle": parts[4] == "true" if len(parts) > 4 else False,
+            "repeat": parts[5] == "true" if len(parts) > 5 else False
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_play_genre(genre: str) -> dict:
+    """
+    Play music from a specific genre on Spotify
+    
+    Args:
+        genre: Genre name (pop, rock, jazz, classical, hip-hop, etc.)
+    """
+    try:
+        import time
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1)
+        
+        escaped = genre.replace('"', '\\"')
+        script = f'''
+        tell application "Spotify"
+            activate
+            play track "spotify:search:genre:{escaped}"
+        end tell
+        '''
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "genre": genre, "message": f"Playing {genre} music"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def spotify_play_mood(mood: str) -> dict:
+    """
+    Play music matching a mood on Spotify
+    
+    Args:
+        mood: Mood/vibe (chill, happy, sad, energetic, focus, sleep, workout, party)
+    """
+    try:
+        import time
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1)
+        
+        # Map moods to search terms
+        mood_map = {
+            "chill": "chill vibes",
+            "happy": "happy hits",
+            "sad": "sad songs",
+            "energetic": "energy boost",
+            "focus": "deep focus",
+            "sleep": "sleep sounds",
+            "workout": "workout motivation",
+            "party": "party hits",
+            "relax": "relaxing music",
+            "study": "study music",
+            "morning": "morning motivation",
+            "night": "late night vibes"
+        }
+        
+        search_term = mood_map.get(mood.lower(), mood)
+        escaped = search_term.replace('"', '\\"')
+        
+        script = f'''
+        tell application "Spotify"
+            activate
+            play track "spotify:search:{escaped}"
+        end tell
+        '''
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        return {"success": True, "mood": mood, "message": f"Playing {mood} music"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 def get_current_song() -> dict:
     """
     Get currently playing song info

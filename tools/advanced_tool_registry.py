@@ -11,6 +11,11 @@ from tools.advanced_tools import (
     list_processes, kill_process,
     get_network_info,
     control_music, get_current_song, play_spotify_track, spotify_play_library,
+    spotify_get_current_track, spotify_next_track, spotify_previous_track,
+    spotify_pause, spotify_resume, spotify_toggle_playback,
+    spotify_set_volume, spotify_get_volume, spotify_toggle_shuffle, spotify_toggle_repeat,
+    spotify_play_artist, spotify_play_album, spotify_play_playlist,
+    spotify_seek, spotify_get_status, spotify_play_genre, spotify_play_mood,
     run_shell_command
 )
 
@@ -585,6 +590,151 @@ ADVANCED_TOOLS = {
             "required": []
         },
         "function": spotify_play_library
+    },
+    
+    "spotify_get_current_track": {
+        "description": "Get info about currently playing track on Spotify: song name, artist, album, duration, progress",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_get_current_track
+    },
+    
+    "spotify_next_track": {
+        "description": "Skip to next track on Spotify. Use for: next song, skip, skip track",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_next_track
+    },
+    
+    "spotify_previous_track": {
+        "description": "Go back to previous track on Spotify. Use for: previous song, go back, last song",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_previous_track
+    },
+    
+    "spotify_pause": {
+        "description": "Pause Spotify playback. Use for: pause music, stop music, pause spotify",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_pause
+    },
+    
+    "spotify_resume": {
+        "description": "Resume Spotify playback. Use for: resume music, continue playing, unpause",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_resume
+    },
+    
+    "spotify_toggle_playback": {
+        "description": "Toggle play/pause on Spotify",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_toggle_playback
+    },
+    
+    "spotify_set_volume": {
+        "description": "Set Spotify volume (0-100). Use for: spotify volume, turn up/down spotify",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "volume": {"type": "integer", "description": "Volume level 0-100"}
+            },
+            "required": ["volume"]
+        },
+        "function": spotify_set_volume
+    },
+    
+    "spotify_get_volume": {
+        "description": "Get current Spotify volume level",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_get_volume
+    },
+    
+    "spotify_toggle_shuffle": {
+        "description": "Toggle shuffle mode on Spotify. Use for: shuffle on/off, enable/disable shuffle",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_toggle_shuffle
+    },
+    
+    "spotify_toggle_repeat": {
+        "description": "Toggle repeat mode on Spotify. Use for: repeat on/off, loop song",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_toggle_repeat
+    },
+    
+    "spotify_play_artist": {
+        "description": "Play music by a specific artist on Spotify. Use for: play Taylor Swift, play music by Drake",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "artist_name": {"type": "string", "description": "Name of the artist"}
+            },
+            "required": ["artist_name"]
+        },
+        "function": spotify_play_artist
+    },
+    
+    "spotify_play_album": {
+        "description": "Play a specific album on Spotify. Use for: play album Thriller, play Abbey Road",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "album_name": {"type": "string", "description": "Name of the album"},
+                "artist": {"type": "string", "description": "Optional artist name for better matching"}
+            },
+            "required": ["album_name"]
+        },
+        "function": spotify_play_album
+    },
+    
+    "spotify_play_playlist": {
+        "description": "Play a playlist by name on Spotify. Use for: play my workout playlist, play road trip playlist",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "playlist_name": {"type": "string", "description": "Name of the playlist"}
+            },
+            "required": ["playlist_name"]
+        },
+        "function": spotify_play_playlist
+    },
+    
+    "spotify_seek": {
+        "description": "Seek to a position in the current track. Use for: skip to 1 minute, go to 30 seconds",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "position_seconds": {"type": "integer", "description": "Position in seconds"}
+            },
+            "required": ["position_seconds"]
+        },
+        "function": spotify_seek
+    },
+    
+    "spotify_get_status": {
+        "description": "Get full Spotify status: playing state, current track, volume, shuffle, repeat",
+        "parameters": {"type": "object", "properties": {}},
+        "function": spotify_get_status
+    },
+    
+    "spotify_play_genre": {
+        "description": "Play music from a genre on Spotify. Use for: play jazz, play rock music, play classical",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "genre": {"type": "string", "description": "Genre name (pop, rock, jazz, classical, hip-hop, electronic, etc.)"}
+            },
+            "required": ["genre"]
+        },
+        "function": spotify_play_genre
+    },
+    
+    "spotify_play_mood": {
+        "description": "Play music matching a mood/vibe. Use for: play something chill, play workout music, play sleep music",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mood": {"type": "string", "description": "Mood/vibe: chill, happy, sad, energetic, focus, sleep, workout, party, relax, study"}
+            },
+            "required": ["mood"]
+        },
+        "function": spotify_play_mood
     },
     
     # SHELL COMMANDS
