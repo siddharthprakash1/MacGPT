@@ -635,6 +635,74 @@ def play_spotify_track(query: str) -> dict:
         }
 
 
+def spotify_play_library(item: str = "liked") -> dict:
+    """
+    Play Spotify library items like Liked Songs, playlists, or albums
+    
+    Args:
+        item: What to play - "liked", "discover", "release radar", or a playlist name
+    
+    Returns:
+        dict: Result with success status
+    """
+    try:
+        import time
+        
+        # Open Spotify first
+        subprocess.run(['open', '-a', 'Spotify'], check=False)
+        time.sleep(1.5)
+        
+        item_lower = item.lower().strip()
+        
+        # Map common requests to Spotify URIs
+        uri_map = {
+            "liked": "spotify:collection:tracks",
+            "liked songs": "spotify:collection:tracks",
+            "my liked songs": "spotify:collection:tracks",
+            "favorites": "spotify:collection:tracks",
+            "saved songs": "spotify:collection:tracks",
+            "discover": "spotify:playlist:37i9dQZEVXcQ9COmYvLnAL",
+            "discover weekly": "spotify:playlist:37i9dQZEVXcQ9COmYvLnAL",
+            "release radar": "spotify:playlist:37i9dQZEVXdNxfTNOg82rb",
+            "daily mix": "spotify:playlist:37i9dQZF1E35F7gvkWxrjr",
+        }
+        
+        # Get URI or use search
+        uri = uri_map.get(item_lower)
+        
+        if uri:
+            # Play specific URI
+            script = f'''
+            tell application "Spotify"
+                activate
+                play track "{uri}"
+            end tell
+            '''
+        else:
+            # Search and play playlist
+            escaped = item.replace('"', '\\"')
+            script = f'''
+            tell application "Spotify"
+                activate
+                play track "spotify:search:{escaped}"
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True, timeout=5)
+        
+        return {
+            "success": True,
+            "item": item,
+            "message": f"Playing {item} on Spotify app"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "suggestion": "Make sure Spotify desktop app is installed"
+        }
+
+
 def get_current_song() -> dict:
     """
     Get currently playing song info

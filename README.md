@@ -1,38 +1,47 @@
-# macOS AI Commander 🚀
+# MacGPT 🚀
 
-> **AI-Powered macOS Automation System** | Control your entire Mac through natural language using local AI
+> **AI-Powered macOS Automation** | Control your entire Mac through natural language using local AI
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Ollama](https://img.shields.io/badge/Ollama-Required-green.svg)](https://ollama.ai)
-[![Tools: 189](https://img.shields.io/badge/Tools-189-purple.svg)]()
+[![Tools: 179](https://img.shields.io/badge/Tools-179-purple.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Transform your Mac into an AI-powered automation machine. Use natural language to control windows, manage files, scrape websites, query databases, and execute 189+ system operations - all running locally with complete privacy.
+Transform your Mac into an AI-powered automation machine. Use natural language to control windows, manage files, search with Spotlight, play Spotify, and execute 179+ system operations - all running locally with complete privacy.
 
-![Demo](docs/assets/demo.gif) <!-- Add a demo GIF if you have one -->
+## ⚡ One-Line Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/siddharthprakash1/MacGPT/main/install.sh | bash
+```
+
+Then just run:
+```bash
+macgpt
+```
+
+Open **http://localhost:7889** and start chatting! 🎉
 
 ## ✨ Key Features
 
+- 🧠 **100% Local AI** - Powered by Ollama, no cloud, complete privacy
+- 🌐 **Modern Web UI** - Clean dark theme inspired by ChatGPT/Claude
+- 🔍 **Spotlight Search** - Find files, apps, duplicates with natural language
+- 🎵 **Spotify Control** - Play liked songs, playlists directly in the app
+- 🪟 **Window Management** - Snap, resize, arrange windows by voice
+- 📱 **179 Tools** - Comprehensive automation across 15 categories
 - 🎤 **Voice Control** - Speak commands naturally (CLI mode)
-- 🌐 **Beautiful Web UI** - Glassmorphism design with smooth animations
-- 🧠 **Local AI** - Powered by Ollama, no cloud required
-- 🔒 **Complete Privacy** - All processing happens on your Mac
-- ⚡ **189 Tools** - Comprehensive automation across 15 categories
-- 🎯 **Smart Context** - AI understands multi-step workflows
-- 📱 **Modern UX** - Intuitive interface for both CLI and web
 
 ## 🎬 Quick Demo
 
 ```bash
-# Install and run in 3 commands
-pip install -r requirements.txt
-ollama pull gpt-oss:20b
-python start_web.py
-
-# Then try:
-"Snap Chrome to left and Safari to right"
-"Test my internet speed"
-"Compress all PDFs in Downloads"
+# Examples of what you can say:
+"Find files over 100MB"
+"Which apps are using the most disk space?"
+"Play my liked songs on Spotify"
+"Open Chrome and Safari side by side"
+"What's my battery level?"
+"Create a reminder to call mom tomorrow"
 ```
 
 ## 🛠️ What Can It Do?
@@ -72,11 +81,20 @@ Install, update, manage packages via brew, npm, pip
 "Update all npm packages" → Upgrades global packages
 ```
 
-### ⌨️ Keyboard & Mouse (9 tools)
-Automate typing, clicks, hotkeys, mouse movements
+### 🔍 Spotlight Search (12 tools)
+Powerful file search using macOS Spotlight
 ```
-"Type 'Hello World' and press cmd+s" → Types and saves
-"Move mouse to center of screen" → Moves cursor
+"Find files over 100MB" → Lists large files with sizes
+"Which apps use the most space?" → Shows apps by disk usage
+"Find files I modified today" → Recent user files (no system files)
+```
+
+### 🎵 Spotify Control (3 tools)
+Control Spotify directly from the app
+```
+"Play my liked songs" → Plays from Spotify app
+"Play Discover Weekly" → Starts playlist
+"Pause the music" → Controls playback
 ```
 
 ### 🎬 Screen & Media (8 tools)
@@ -204,30 +222,40 @@ Modern, animated UI on `http://localhost:7889`:
 
 ## 📦 Installation
 
-### Prerequisites
+### Option 1: One-Line Install (Recommended)
 ```bash
-# macOS 10.15+, Python 3.8+
-brew install ollama portaudio
+curl -fsSL https://raw.githubusercontent.com/siddharthprakash1/MacGPT/main/install.sh | bash
 ```
 
-### Quick Setup
-```bash
-# 1. Clone repository
-git clone https://github.com/yourusername/macos-ai-commander.git
-cd macos-ai-commander
+This will:
+- ✅ Check prerequisites (Ollama, Python)
+- ✅ Clone the repository to `~/.macgpt`
+- ✅ Create virtual environment
+- ✅ Install all dependencies
+- ✅ Create `macgpt` command
 
-# 2. Install dependencies
+Then just run: `macgpt`
+
+### Option 2: Manual Setup
+```bash
+# Prerequisites: macOS 12+, Python 3.9+, Ollama
+brew install ollama
+
+# Clone and setup
+git clone https://github.com/siddharthprakash1/MacGPT.git
+cd MacGPT
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# 3. Download AI model
-ollama pull gpt-oss:20b
+# Pull an AI model
+ollama pull mistral
+# OR for better results:
+ollama pull llama3.1
 
-# 4. Run!
-python start_cli.py   # CLI with voice
-# OR
-python start_web.py   # Web UI
+# Run
+python start_web.py   # Web UI at http://localhost:7889
+python start_cli.py   # CLI with voice control
 ```
 
 [**→ Detailed installation guide**](docs/GETTING_STARTED.md)

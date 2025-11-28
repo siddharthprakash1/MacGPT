@@ -10,7 +10,7 @@ from tools.advanced_tools import (
     create_reminder,
     list_processes, kill_process,
     get_network_info,
-    control_music, get_current_song, play_spotify_track,
+    control_music, get_current_song, play_spotify_track, spotify_play_library,
     run_shell_command
 )
 
@@ -569,6 +569,22 @@ ADVANCED_TOOLS = {
             "required": ["query"]
         },
         "function": play_spotify_track
+    },
+    
+    "spotify_play_library": {
+        "description": "Play Spotify library items: Liked Songs, Discover Weekly, Release Radar, playlists. Use for: play my liked songs, play favorites, play saved songs, play discover weekly",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "type": "string",
+                    "description": "What to play: 'liked' (liked songs), 'discover' (Discover Weekly), 'release radar', or a playlist name",
+                    "default": "liked"
+                }
+            },
+            "required": []
+        },
+        "function": spotify_play_library
     },
     
     # SHELL COMMANDS

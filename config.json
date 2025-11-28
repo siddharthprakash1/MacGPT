@@ -37,6 +37,7 @@
       "control_music",
       "get_current_song",
       "play_spotify_track",
+      "spotify_play_library",
       "run_shell_command",
       "list_workflows",
       "run_workflow",
