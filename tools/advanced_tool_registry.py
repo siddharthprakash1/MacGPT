@@ -37,6 +37,40 @@ from tools.smart_helpers import (
     smart_search
 )
 
+# State-of-the-art memory tools for persistent agent memory
+from tools.memory_tools import (
+    # Core memory
+    memory_remember,
+    memory_recall,
+    memory_forget,
+    memory_search,
+    # Preferences
+    memory_set_preference,
+    memory_get_preference,
+    memory_list_preferences,
+    # Shortcuts & Procedures
+    memory_create_shortcut,
+    memory_run_shortcut,
+    memory_list_shortcuts,
+    memory_delete_shortcut,
+    memory_learn_procedure,
+    # Context
+    memory_set_context,
+    memory_get_context,
+    memory_clear_context,
+    # Episodes
+    memory_save_episode,
+    memory_get_recent_episodes,
+    # Analytics
+    memory_stats,
+    memory_get_frequent_commands,
+    memory_get_frequent_tools,
+    # Maintenance
+    memory_consolidate,
+    memory_reset,
+    memory_associate
+)
+
 from tools.quick_tools import (
     quick_find_file,
     set_volume,
@@ -308,13 +342,13 @@ ADVANCED_TOOLS = {
     },
     
     "create_directory": {
-        "description": "Create a new directory (including parent directories if needed)",
+        "description": "Create a new folder/directory. REQUIRED PARAM: directory (path like '~/Desktop/NewFolder' or '/Users/name/Projects/app')",
         "parameters": {
             "type": "object",
             "properties": {
                 "directory": {
                     "type": "string",
-                    "description": "Directory path to create"
+                    "description": "Directory path to create - REQUIRED (e.g., '~/Desktop/MyFolder', '~/Projects/new-app')"
                 }
             },
             "required": ["directory"]
@@ -324,13 +358,13 @@ ADVANCED_TOOLS = {
     
     # APPLICATION CONTROL
     "open_application": {
-        "description": "Open a macOS application. Supports aliases like 'brave', 'vscode', 'chrome', 'spotify'. Smart name resolution!",
+        "description": "Open/launch a macOS application. REQUIRED PARAM: app_name (e.g., 'Terminal', 'Safari', 'Chrome', 'Spotify', 'VS Code'). Supports common aliases.",
         "parameters": {
             "type": "object",
             "properties": {
                 "app_name": {
                     "type": "string",
-                    "description": "Application name or alias (e.g., 'Safari', 'brave', 'vscode', 'spotify')"
+                    "description": "Application name - REQUIRED (e.g., 'Safari', 'Terminal', 'Chrome', 'Spotify', 'VS Code')"
                 }
             },
             "required": ["app_name"]
@@ -1166,13 +1200,13 @@ ADVANCED_TOOLS = {
     
     # QUICK TOOLS (Fast like Siri)
     "quick_find_file": {
-        "description": "FAST file search using Spotlight (instant, better than find command)",
+        "description": "FAST file search using Spotlight. REQUIRED PARAM: filename (search term like 'report.pdf' or 'notes')",
         "parameters": {
             "type": "object",
             "properties": {
                 "filename": {
                     "type": "string",
-                    "description": "File name to search for"
+                    "description": "File name or search term - REQUIRED (e.g., 'report.pdf', 'notes', 'project')"
                 }
             },
             "required": ["filename"]
@@ -2812,8 +2846,14 @@ ADVANCED_TOOLS = {
     },
     
     "get_ip_info": {
-        "description": "Get public IP and location info",
-        "parameters": {"type": "object", "properties": {}},
+        "description": "Get public IP info and location. Optional: provide 'ip_address' to look up a specific IP.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ip_address": {"type": "string", "description": "IP to look up (default: my IP)"}
+            },
+            "required": []
+        },
         "function": get_ip_info
     },
     
@@ -2877,6 +2917,264 @@ ADVANCED_TOOLS = {
         "description": "Test internet upload speed",
         "parameters": {"type": "object", "properties": {}},
         "function": test_upload_speed
+    },
+    
+    # ==================== STATE-OF-THE-ART MEMORY SYSTEM ====================
+    # Intelligent memory with semantic search, importance scoring, and associations
+    # All processing is LOCAL - no external APIs
+    
+    # --- Core Memory ---
+    "memory_remember": {
+        "description": "Remember a fact with intelligent storage. Auto-associates with related memories. Use: remember that, don't forget, keep in mind",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "fact": {"type": "string", "description": "The fact to remember (natural language)"},
+                "category": {"type": "string", "description": "Category: general, personal, work, project, technical", "default": "general"},
+                "importance": {"type": "string", "description": "Importance: low, medium, high", "default": "medium"}
+            },
+            "required": ["fact"]
+        },
+        "function": memory_remember
+    },
+    
+    "memory_recall": {
+        "description": "Intelligently recall memories using semantic search. Finds relevant memories even without exact match. Use: what do you know about, recall, remember",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query (uses semantic matching)", "default": ""},
+                "category": {"type": "string", "description": "Filter by category", "default": ""},
+                "top_k": {"type": "integer", "description": "Max results", "default": 10}
+            },
+            "required": []
+        },
+        "function": memory_recall
+    },
+    
+    "memory_forget": {
+        "description": "Forget memories matching a query",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Matching memories will be forgotten"}
+            },
+            "required": ["query"]
+        },
+        "function": memory_forget
+    },
+    
+    "memory_search": {
+        "description": "Semantic search across ALL memories. Uses TF-IDF matching - finds relevant memories even without exact word match",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Natural language search query"},
+                "memory_type": {"type": "string", "description": "Filter: fact, preference, shortcut, episode, procedure", "default": ""}
+            },
+            "required": ["query"]
+        },
+        "function": memory_search
+    },
+    
+    # --- Preferences ---
+    "memory_set_preference": {
+        "description": "Save a user preference. Use: I prefer X, my default is Y, remember that I like Z",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "key": {"type": "string", "description": "Preference name (browser, editor, theme, projects_dir)"},
+                "value": {"type": "string", "description": "Preference value"}
+            },
+            "required": ["key", "value"]
+        },
+        "function": memory_set_preference
+    },
+    
+    "memory_get_preference": {
+        "description": "Get a saved preference",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "key": {"type": "string", "description": "Preference name"}
+            },
+            "required": ["key"]
+        },
+        "function": memory_get_preference
+    },
+    
+    "memory_list_preferences": {
+        "description": "List all user preferences",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_list_preferences
+    },
+    
+    # --- Shortcuts & Procedures ---
+    "memory_create_shortcut": {
+        "description": "Create a command shortcut for quick execution. Use: create shortcut, save shortcut, make shortcut",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Short name (dev, music, work)"},
+                "command": {"type": "string", "description": "Full command in natural language"},
+                "description": {"type": "string", "description": "Description", "default": ""}
+            },
+            "required": ["name", "command"]
+        },
+        "function": memory_create_shortcut
+    },
+    
+    "memory_run_shortcut": {
+        "description": "Run a saved shortcut. Use: run my X shortcut, execute shortcut, do X",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Shortcut name"}
+            },
+            "required": ["name"]
+        },
+        "function": memory_run_shortcut
+    },
+    
+    "memory_list_shortcuts": {
+        "description": "List all saved shortcuts",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_list_shortcuts
+    },
+    
+    "memory_delete_shortcut": {
+        "description": "Delete a shortcut",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Shortcut name to delete"}
+            },
+            "required": ["name"]
+        },
+        "function": memory_delete_shortcut
+    },
+    
+    "memory_learn_procedure": {
+        "description": "Learn a multi-step workflow. Use: learn this workflow, remember these steps, create procedure",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Procedure name"},
+                "steps": {"type": "string", "description": "Steps separated by ' -> ' (e.g., 'Open Chrome -> Check email -> Open Slack')"},
+                "trigger": {"type": "string", "description": "Natural language trigger phrase", "default": ""}
+            },
+            "required": ["name", "steps"]
+        },
+        "function": memory_learn_procedure
+    },
+    
+    # --- Context ---
+    "memory_set_context": {
+        "description": "Set current working context. Use: I'm working on X, current project is Y",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "key": {"type": "string", "description": "Context type (project, task, directory, goal)"},
+                "value": {"type": "string", "description": "Context value"}
+            },
+            "required": ["key", "value"]
+        },
+        "function": memory_set_context
+    },
+    
+    "memory_get_context": {
+        "description": "Get current working context",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_get_context
+    },
+    
+    "memory_clear_context": {
+        "description": "Clear all context (fresh start)",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_clear_context
+    },
+    
+    # --- Episodes ---
+    "memory_save_episode": {
+        "description": "Save a conversation summary. Use: save this conversation, remember what we did",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "summary": {"type": "string", "description": "Brief summary of what happened"},
+                "key_points": {"type": "string", "description": "Comma-separated key takeaways", "default": ""}
+            },
+            "required": ["summary"]
+        },
+        "function": memory_save_episode
+    },
+    
+    "memory_get_recent_episodes": {
+        "description": "Get recent conversation summaries",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max episodes", "default": 5}
+            },
+            "required": []
+        },
+        "function": memory_get_recent_episodes
+    },
+    
+    # --- Analytics ---
+    "memory_stats": {
+        "description": "Get memory system statistics and summary",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_stats
+    },
+    
+    "memory_get_frequent_commands": {
+        "description": "Get most frequently used commands",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max results", "default": 10}
+            },
+            "required": []
+        },
+        "function": memory_get_frequent_commands
+    },
+    
+    "memory_get_frequent_tools": {
+        "description": "Get most frequently used tools",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max results", "default": 10}
+            },
+            "required": []
+        },
+        "function": memory_get_frequent_tools
+    },
+    
+    # --- Maintenance ---
+    "memory_consolidate": {
+        "description": "Consolidate and optimize memories. Merges similar, removes outdated",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_consolidate
+    },
+    
+    "memory_reset": {
+        "description": "Reset ALL memories permanently. DANGER - cannot be undone!",
+        "parameters": {"type": "object", "properties": {}},
+        "function": memory_reset
+    },
+    
+    "memory_associate": {
+        "description": "Manually associate two memories/concepts",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "memory_query": {"type": "string", "description": "Query to find first memory"},
+                "related_to": {"type": "string", "description": "Query to find related memory"}
+            },
+            "required": ["memory_query", "related_to"]
+        },
+        "function": memory_associate
     }
 }
 

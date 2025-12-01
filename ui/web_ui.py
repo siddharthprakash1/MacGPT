@@ -7,7 +7,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import json
 import sys
-from core.ollama_client import OllamaClient, load_config, SYSTEM_PROMPT
+from core.ollama_client import OllamaClient, load_config, get_system_prompt_with_memory
+from core.memory import get_memory
 
 app = Flask(__name__)
 CORS(app)
@@ -17,7 +18,7 @@ config = load_config()
 client = OllamaClient(config)
 
 # Set optimized system prompt on startup
-client.set_system_prompt(SYSTEM_PROMPT)
+client.set_system_prompt(get_system_prompt_with_memory())
 
 # Pre-cache tools list for /api/tools endpoint
 _cached_tools_list = None
@@ -35,8 +36,8 @@ def get_cached_tools():
 
 @app.route('/')
 def index():
-    """Serve the main chat interface"""
-    return render_template('index.html', 
+    """Serve the modern chat interface"""
+    return render_template('index_modern.html', 
                          model=config['ollama']['model'],
                          tool_count=len(client.mcp_server.tools))
 
@@ -90,8 +91,15 @@ def chat():
 def reset():
     """Reset conversation history"""
     client.reset_conversation()
-    client.set_system_prompt(SYSTEM_PROMPT)
+    client.set_system_prompt(get_system_prompt_with_memory())
     return jsonify({'success': True, 'message': 'Conversation reset'})
+
+
+@app.route('/api/memory', methods=['GET'])
+def get_memories():
+    """Get all agent memories"""
+    memory = get_memory()
+    return jsonify(memory.get_stats())
 
 
 @app.route('/api/tools', methods=['GET'])

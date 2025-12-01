@@ -13,6 +13,7 @@ import sys
 import os
 from typing import List, Dict, Any, Optional
 from core.mcp_server import MCPServer, load_config
+from core.memory import get_memory
 
 
 class OllamaClient:
@@ -164,6 +165,15 @@ class OllamaClient:
                     # Execute the tool
                     tool_result = self.mcp_server.execute_tool(tool_name, tool_args)
                     tool_results.append(tool_result)
+                    
+                    # Log to memory for learning patterns (skip memory tools to avoid recursion)
+                    if not tool_name.startswith('memory_'):
+                        try:
+                            memory = get_memory()
+                            original_message = self.conversation_history[-1].get('content', '') if self.conversation_history else ''
+                            memory.log_command(original_message, tool_name)
+                        except Exception:
+                            pass  # Don't fail on memory errors
                 
                 # Add assistant's tool call to history
                 self.conversation_history.append(message_response)
@@ -199,17 +209,74 @@ class OllamaClient:
         }]
 
 
-# Optimized system prompt - shorter but effective
-SYSTEM_PROMPT = """You are MacGPT, a macOS assistant with system tools.
+# Base system prompt - guides LLM on tool usage
+BASE_SYSTEM_PROMPT = """You are MacGPT, a macOS assistant with system tools and persistent memory.
 
-RULES:
-- Use tools to execute tasks, don't just describe them
-- quick_find_file for file search (fast)
-- play_spotify_track for Spotify music
-- open_application to launch apps
-- Keep responses brief and formatted with markdown
+CRITICAL RULES - FOLLOW EXACTLY:
+1. EXECUTE tools - DO NOT describe or list them as JSON. Call them directly.
+2. Tool names are simple like "get_network_info" NOT "functions.get_network_info"
+3. NEVER output JSON tool descriptions - actually invoke the tools
+4. When user asks multiple things, call ALL relevant tools in sequence
+5. Use exact parameter names from tool schemas
 
-Execute actions directly when asked."""
+KEY TOOLS & PARAMETERS:
+- open_application(app_name="Safari") - launch apps
+- create_directory(directory="~/path") - create folders  
+- quick_find_file(filename="...") - find files
+- spotify_resume() / spotify_pause() - control music
+- browser_new_tab(url="https://...") - open browser tabs
+- browser_search(query="...", engine="google") - web search
+- set_volume(volume=50) - set system volume 0-100
+- run_shell_command(command="...") - run terminal commands
+
+NETWORK TOOLS (use these for network requests):
+- get_network_info() - WiFi status, SSID, IP address
+- get_ip_info() - public IP and geolocation
+- test_download_speed() - internet speed test
+- ping_host(host="google.com") - ping a host
+- check_website_status(url="https://github.com") - check if site is up
+- dns_lookup(domain="example.com") - DNS lookup
+- traceroute(host="8.8.8.8") - network trace
+
+FILE SEARCH TOOLS (FAST - use instead of shell find):
+- find_large_files() - find files >100MB (instant)
+- find_files_by_date(date_range="today") - recent files
+- find_apps_using_disk_space() - apps sorted by size
+- spotlight_natural_search(query="large videos") - natural language search
+
+MEMORY TOOLS (remember things across sessions):
+- memory_remember(fact="...") - remember a fact about the user
+- memory_recall() - recall what you know
+- memory_set_preference(key="browser", value="chrome") - save preferences
+- memory_create_shortcut(name="dev", command="...") - create shortcuts
+- memory_run_shortcut(name="dev") - run a saved shortcut
+
+ALWAYS:
+- Use the EXACT parameter names shown above
+- Keep responses brief with markdown formatting
+- Execute actions immediately when asked
+- Use memory to personalize responses
+- When user asks multiple questions, call ALL relevant tools"""
+
+
+def get_system_prompt_with_memory() -> str:
+    """
+    Build system prompt with current memory context.
+    Includes user preferences, facts, and context from memory.
+    """
+    try:
+        memory = get_memory()
+        memory_summary = memory.get_memory_summary()
+        
+        if memory_summary:
+            return f"{BASE_SYSTEM_PROMPT}\n\n--- USER MEMORY ---\n{memory_summary}"
+        return BASE_SYSTEM_PROMPT
+    except Exception:
+        return BASE_SYSTEM_PROMPT
+
+
+# For backward compatibility
+SYSTEM_PROMPT = BASE_SYSTEM_PROMPT
 
 
 def speak_text(text: str):
@@ -319,8 +386,8 @@ def interactive_mode():
     print("=" * 60)
     print()
     
-    # Set optimized system prompt
-    client.set_system_prompt(SYSTEM_PROMPT)
+    # Set system prompt with memory context
+    client.set_system_prompt(get_system_prompt_with_memory())
     
     while True:
         try:
@@ -345,7 +412,7 @@ def interactive_mode():
             
             if user_input.lower() == 'reset':
                 client.reset_conversation()
-                client.set_system_prompt(SYSTEM_PROMPT)
+                client.set_system_prompt(get_system_prompt_with_memory())
                 print("🔄 Conversation reset\n")
                 continue
             

@@ -236,10 +236,16 @@ def generate_qr_code(text: str, output_path: str = None) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def get_ip_info() -> dict:
-    """Get public IP and location info"""
+def get_ip_info(ip_address: str = None) -> dict:
+    """
+    Get public IP and location info.
+    
+    Args:
+        ip_address: Optional IP to lookup (default: current IP)
+    """
     try:
-        response = requests.get('https://ipapi.co/json/', timeout=10)
+        url = f'https://ipapi.co/{ip_address}/json/' if ip_address else 'https://ipapi.co/json/'
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
         
         data = response.json()

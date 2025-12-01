@@ -486,7 +486,7 @@ def open_url(url: str, browser: str = "default") -> dict:
         }
 
 
-def get_network_info() -> dict:
+def get_network_info(**kwargs) -> dict:
     """
     Get network information
     

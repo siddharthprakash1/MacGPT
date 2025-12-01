@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacGPT - Local AI Agent</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Markdown & Highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        :root {
+            /* Theme Colors */
+            --bg-app: #0f1115;
+            --bg-panel: #161920;
+            --bg-element: #1c2128;
+            --bg-hover: #262c36;
+            
+            --border: #2d3340;
+            --border-light: #3a4252;
+            
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --text-dim: #6e7681;
+            
+            /* Accents */
+            --accent: #2f81f7;
+            --accent-glow: rgba(47, 129, 247, 0.15);
+            --success: #3fb950;
+            --error: #f85149;
+            --warning: #d29922;
+            
+            /* UI Metrics */
+            --sidebar-width: 260px;
+            --header-height: 60px;
+            --input-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-app);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 16px;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .brand-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .nav-items {
+            flex: 1;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--bg-hover);
+            color: var(--text-main);
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .system-status {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-right: 6px;
+        }
+
+        /* --- Main Content --- */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: rgba(15, 17, 21, 0.8);
+            backdrop-filter: blur(10px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .chat-title {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-hover);
+            color: var(--text-main);
+            border-color: var(--border-light);
+        }
+
+        /* Chat Area */
+        .chat-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 80px 0 120px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .message {
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(10px); }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .avatar.user { background: var(--bg-hover); color: var(--text-muted); }
+        .avatar.ai { background: var(--accent); color: white; }
+
+        .sender-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .message-content {
+            padding-left: 36px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        /* Markdown Styles */
+        .message-content p { margin-bottom: 12px; }
+        .message-content p:last-child { margin-bottom: 0; }
+        .message-content pre {
+            background: var(--bg-element);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+        .message-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+        .message-content :not(pre) > code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Tool Execution Styles */
+        .tool-card {
+            margin: 12px 0 12px 36px;
+            background: var(--bg-element);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tool-header {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tool-header:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .tool-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .tool-status {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(63, 185, 80, 0.1);
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .tool-status.error {
+            background: rgba(248, 81, 73, 0.1);
+            color: var(--error);
+        }
+
+        .tool-details {
+            padding: 12px 14px;
+            border-top: 1px solid var(--border);
+            display: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        .tool-details.open {
+            display: block;
+        }
+
+        .tool-section-title {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .json-block {
+            color: var(--text-dim);
+            white-space: pre-wrap;
+            margin-bottom: 12px;
+        }
+        .json-block:last-child { margin-bottom: 0; }
+
+        /* Input Area */
+        .input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px;
+            background: linear-gradient(to top, var(--bg-app) 80%, transparent);
+        }
+
+        .input-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent);
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 15px;
+            resize: none;
+            max-height: 200px;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        .send-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .send-btn:hover { background: #2a73dd; }
+        .send-btn:disabled { 
+            background: var(--bg-hover);
+            cursor: not-allowed; 
+        }
+
+        .send-btn .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+        }
+
+        .send-btn.loading .icon { opacity: 0; }
+        .send-btn.loading .spinner { display: block; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--bg-element);
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: 36px;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title { font-weight: 600; font-size: 16px; }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Memory Stats Styles */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-element);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .memory-section h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .memory-preview {
+            background: var(--bg-element);
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-dim);
+            white-space: pre-wrap;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">⌘</div>
+            <span>MacGPT</span>
+        </div>
+        
+        <div class="nav-items">
+            <div class="nav-item active">
+                <span>💬</span> Chat
+            </div>
+            <div class="nav-item" onclick="showTools()">
+                <span>⚡</span> Tools
+            </div>
+            <div class="nav-item" onclick="showMemory()">
+                <span>🧠</span> Memory
+            </div>
+        </div>
+
+        <div class="system-status">
+            <div class="status-item">
+                <span>Model</span>
+                <span>{{ model }}</span>
+            </div>
+            <div class="status-item">
+                <span>Tools</span>
+                <span>{{ tool_count }} loaded</span>
+            </div>
+            <div class="status-item">
+                <span>Status</span>
+                <span><span class="status-badge"></span>Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <header class="chat-header">
+            <div class="chat-title">New Session</div>
+            <div class="header-actions">
+                <button class="btn-icon" title="Reset Chat" onclick="resetChat()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="chat-scroll" id="chatScroll">
+            <div class="chat-container" id="chatContainer">
+                <!-- Welcome Message -->
+                <div class="message">
+                    <div class="message-header">
+                        <div class="avatar ai">⌘</div>
+                        <span class="sender-name">MacGPT</span>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your local macOS assistant with persistent memory.</p>
+                        <p>I can control apps, manage files, browse the web, and remember your preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <textarea id="userInput" placeholder="Ask MacGPT to do something..." rows="1"></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                    </svg>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools Modal -->
+    <div class="modal-overlay" id="toolsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Available Tools</h2>
+                <button class="modal-close" onclick="closeModal('toolsModal')">×</button>
+            </div>
+            <div class="modal-content" id="toolsList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Modal -->
+    <div class="modal-overlay" id="memoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Agent Memory</h2>
+                <button class="modal-close" onclick="closeModal('memoryModal')">×</button>
+            </div>
+            <div class="modal-content" id="memoryContent">
+                <div class="stat-grid" id="memoryStats">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="memory-section">
+                    <h3>Memory Summary</h3>
+                    <div class="memory-preview" id="memorySummary">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Markdown Config ---
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true
+        });
+
+        // --- DOM Elements ---
+        const chatContainer = document.getElementById('chatContainer');
+        const chatScroll = document.getElementById('chatScroll');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // --- Chat Logic ---
+        function appendMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            
+            const avatar = role === 'user' ? 'You' : '⌘';
+            const cls = role === 'user' ? 'user' : 'ai';
+            const name = role === 'user' ? 'You' : 'MacGPT';
+            
+            // Render Markdown
+            const renderedContent = marked.parse(content);
+            
+            div.innerHTML = `
+                <div class="message-header">
+                    <div class="avatar ${cls}">${avatar}</div>
+                    <span class="sender-name">${name}</span>
+                </div>
+                <div class="message-content">${renderedContent}</div>
+            `;
+            
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function appendTool(toolName, params, result) {
+            const div = document.createElement('div');
+            div.className = 'tool-card';
+            
+            const isError = result.success === false || (result.error !== undefined);
+            const statusClass = isError ? 'error' : 'success';
+            const statusText = isError ? 'Failed' : 'Success';
+            
+            div.innerHTML = `
+                <div class="tool-header" onclick="this.nextElementSibling.classList.toggle('open')">
+                    <div class="tool-info">
+                        <span>⚡</span>
+                        ${toolName}
+                    </div>
+                    <div class="tool-status ${statusClass}">${statusText}</div>
+                </div>
+                <div class="tool-details">
+                    <div class="tool-section-title">Parameters</div>
+                    <div class="json-block">${JSON.stringify(params, null, 2)}</div>
+                    <div class="tool-section-title">Result</div>
+                    <div class="json-block">${JSON.stringify(result, null, 2)}</div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatScroll.scrollTop = chatScroll.scrollHeight;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'typing-indicator';
+            div.id = 'typingIndicator';
+            div.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            const el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // UI Updates
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            appendMessage('user', text);
+            
+            // Set loading state
+            sendBtn.disabled = true;
+            sendBtn.classList.add('loading');
+            showTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: text })
+                });
+                
+                const data = await response.json();
+                hideTyping();
+                
+                // Show tools
+                if (data.tool_executions) {
+                    for (const tool of data.tool_executions) {
+                        appendTool(tool.tool, tool.params, tool.result);
+                    }
+                }
+                
+                // Show response
+                if (data.response) {
+                    appendMessage('ai', data.response);
+                }
+                
+            } catch (err) {
+                hideTyping();
+                appendMessage('ai', `**Error:** ${err.message}`);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('loading');
+                userInput.focus();
+            }
+        }
+
+        async function resetChat() {
+            if(!confirm('Clear conversation history?')) return;
+            await fetch('/api/reset', { method: 'POST' });
+            window.location.reload();
+        }
+
+        // --- Memory & Tools ---
+        async function showMemory() {
+            document.getElementById('memoryModal').classList.add('active');
+            
+            try {
+                const res = await fetch('/api/memory');
+                const data = await res.json();
+                
+                if(data.success) {
+                    const stats = data.stats;
+                    document.getElementById('memoryStats').innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_memories}</div>
+                            <div class="stat-label">Total Memories</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.shortcuts}</div>
+                            <div class="stat-label">Shortcuts</div>
+                        </div>
+                    `;
+                    document.getElementById('memorySummary').textContent = data.summary || "No memories yet.";
+                }
+            } catch(e) {
+                document.getElementById('memorySummary').textContent = "Failed to load memory.";
+            }
+        }
+
+        async function showTools() {
+            document.getElementById('toolsModal').classList.add('active');
+            const list = document.getElementById('toolsList');
+            if (list.children.length > 0) return; // Already loaded
+
+            const res = await fetch('/api/tools');
+            const data = await res.json();
+            
+            list.innerHTML = data.tools.map(t => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="font-weight: 600; color: var(--text-main); margin-bottom: 4px;">${t.name}</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">${t.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // --- Event Listeners ---
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Modal overlay clicks
+        document.querySelectorAll('.modal-overlay').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if(e.target === el) el.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
