@@ -1,0 +1,759 @@
+{
+  "timestamp": "2025-11-28T16:29:04.656334",
+  "total_tests": 65,
+  "passed": 0,
+  "failed": 65,
+  "pass_rate": 0.0,
+  "total_time": 2710.088406085968,
+  "results": [
+    {
+      "name": "Spotify: Play Liked Songs",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Pause",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Resume",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Toggle Playback",
+      "passed": false,
+      "time": 48.93611288070679,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "",
+      "expected": [
+        "spotify_toggle_playback",
+        "control_music"
+      ]
+    },
+    {
+      "name": "Spotify: Next Track",
+      "passed": false,
+      "time": 27.25365400314331,
+      "tools_called": [
+        "spotify_next_song"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I couldn't find the requested tool. Please let me know what you'd like to do next.",
+      "expected": [
+        "spotify_next_track",
+        "control_music"
+      ]
+    },
+    {
+      "name": "Spotify: Previous Track",
+      "passed": false,
+      "time": 38.75588393211365,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I don\u2019t have a direct tool to jump to the previous track.  \nCould you let me know the name of the song you\u2019d like to play?",
+      "expected": [
+        "spotify_previous_track",
+        "control_music"
+      ]
+    },
+    {
+      "name": "Spotify: Get Current Track",
+      "passed": false,
+      "time": 26.46562099456787,
+      "tools_called": [
+        "spotify_current_track"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "It seems there was an error calling a tool.  \nLet me know what you\u2019d like to do next!",
+      "expected": [
+        "spotify_get_current_track",
+        "get_current_song"
+      ]
+    },
+    {
+      "name": "Spotify: Get Status",
+      "passed": false,
+      "time": 25.6995849609375,
+      "tools_called": [
+        "spotify.get_spotify_status"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I didn\u2019t receive a clear request.  \nLet me know what you\u2019d like to do next\u2014e.g., \u201cFind a file\u201d or \u201cPlay a song on Spotify.\u201d",
+      "expected": [
+        "spotify_get_status"
+      ]
+    },
+    {
+      "name": "Spotify: Set Volume",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Get Volume",
+      "passed": false,
+      "time": 43.48760199546814,
+      "tools_called": [
+        "open_terminal_command"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I\u2019m sorry, but there\u2019s no tool available that can read Spotify\u2019s current volume level directly.",
+      "expected": [
+        "spotify_get_volume"
+      ]
+    },
+    {
+      "name": "Spotify: Toggle Shuffle",
+      "passed": false,
+      "time": 59.49748396873474,
+      "tools_called": [
+        "osascript",
+        "open_terminal_command"
+      ],
+      "tool_results": [
+        false,
+        false
+      ],
+      "response": "**Error:** The requested command failed to execute.  \nPlease let me know what you\u2019d like to do next.",
+      "expected": [
+        "spotify_toggle_shuffle"
+      ]
+    },
+    {
+      "name": "Spotify: Toggle Repeat",
+      "passed": false,
+      "time": 28.223953247070312,
+      "tools_called": [
+        "spotify_repeat"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I\u2019m ready to help! Just let me know what you\u2019d like to do.",
+      "expected": [
+        "spotify_toggle_repeat"
+      ]
+    },
+    {
+      "name": "Spotify: Play Artist",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Play Album",
+      "passed": false,
+      "time": 45.25687503814697,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "It looks like there was an issue with the previous command.  \nPlease let me know what you'd like to do next!",
+      "expected": [
+        "spotify_play_album",
+        "play_spotify_track"
+      ]
+    },
+    {
+      "name": "Spotify: Play Playlist",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Play Genre",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Play Mood",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Search Track",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Discover Weekly",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Spotify: Release Radar",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: New Tab",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: New Tab with URL",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Close Tab",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Close All Tabs",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Get Tab Count",
+      "passed": false,
+      "time": 28.671705961227417,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m not able to count Chrome tabs directly.  \nCould you tell me if you\u2019d like the number of Chrome windows instead?",
+      "expected": [
+        "browser_get_tab_count"
+      ]
+    },
+    {
+      "name": "Browser: Get All Tabs",
+      "passed": false,
+      "time": 45.43486309051514,
+      "tools_called": [
+        "list_all_windows"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I\u2019m ready to help. What would you like me to do?",
+      "expected": [
+        "browser_get_all_tabs"
+      ]
+    },
+    {
+      "name": "Browser: Switch Tab",
+      "passed": false,
+      "time": 17.42470383644104,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m unable to switch tabs directly with the current tools. I can bring Chrome to the front if you\u2019d like.",
+      "expected": [
+        "browser_switch_tab"
+      ]
+    },
+    {
+      "name": "Browser: Next Tab",
+      "passed": false,
+      "time": 57.151819944381714,
+      "tools_called": [
+        "browser_get_current_url"
+      ],
+      "tool_results": [
+        true
+      ],
+      "response": "It seems there was no URL provided. Could you let me know what you'd like to open or do next?",
+      "expected": [
+        "browser_next_tab"
+      ]
+    },
+    {
+      "name": "Browser: Previous Tab",
+      "passed": false,
+      "time": 17.00901985168457,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m sorry, but I don\u2019t have a function to switch browser tabs.",
+      "expected": [
+        "browser_previous_tab"
+      ]
+    },
+    {
+      "name": "Browser: Duplicate Tab",
+      "passed": false,
+      "time": 28.8151957988739,
+      "tools_called": [
+        "chrome_duplicate_tab"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I couldn't find a tool named **chrome_duplicate_tab**.  \nWhat would you like to do instead?",
+      "expected": [
+        "browser_duplicate_tab"
+      ]
+    },
+    {
+      "name": "Browser: Reopen Closed Tab",
+      "passed": false,
+      "time": 25.968636751174927,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m not sure which browser you\u2019re using. Could you let me know whether you want to reopen the tab in Chrome, Safari, or another browser?",
+      "expected": [
+        "browser_reopen_closed_tab"
+      ]
+    },
+    {
+      "name": "Browser: Pin Tab",
+      "passed": false,
+      "time": 16.312989950180054,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m sorry, but I don\u2019t have a tool to pin browser tabs directly. You\u2019ll need to pin it manually in the browser UI.",
+      "expected": [
+        "browser_pin_tab"
+      ]
+    },
+    {
+      "name": "Browser: Mute Tab",
+      "passed": false,
+      "time": 21.25562596321106,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m sorry, but I don\u2019t have a tool to mute a browser tab directly.",
+      "expected": [
+        "browser_mute_tab"
+      ]
+    },
+    {
+      "name": "Browser: Refresh",
+      "passed": false,
+      "time": 30.966351747512817,
+      "tools_called": [
+        "chrome_get_current_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I couldn't retrieve the Chrome URL.  \nLet me know what you\u2019d like to do next.",
+      "expected": [
+        "browser_refresh"
+      ]
+    },
+    {
+      "name": "Browser: Go Back",
+      "passed": false,
+      "time": 24.784852981567383,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m sorry, but I don\u2019t have a function to send a \u201cback\u201d command to Chrome.",
+      "expected": [
+        "browser_go_back"
+      ]
+    },
+    {
+      "name": "Browser: Go Forward",
+      "passed": false,
+      "time": 25.160073041915894,
+      "tools_called": [
+        "browser_forward"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "It looks like there was a mistake in the previous tool call. If you need anything else, just let me know!",
+      "expected": [
+        "browser_go_forward"
+      ]
+    },
+    {
+      "name": "Browser: Scroll Down",
+      "passed": false,
+      "time": 23.75971794128418,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m not sure which window or application you\u2019re referring to. Could you let me know which app (e.g., Safari, Chrome, etc.) the page is open in?",
+      "expected": [
+        "browser_scroll"
+      ]
+    },
+    {
+      "name": "Browser: Scroll Top",
+      "passed": false,
+      "time": 19.312808990478516,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I don\u2019t have a direct tool to scroll the page, but you can quickly jump to the top by pressing **\u2318\u202f\u2191** (Command\u202f+\u202fUp\u2011arrow).",
+      "expected": [
+        "browser_scroll"
+      ]
+    },
+    {
+      "name": "Browser: Get URL",
+      "passed": false,
+      "time": 28.95815086364746,
+      "tools_called": [
+        "chrome_get_current_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I couldn\u2019t retrieve the URL.  \nMake sure **Google Chrome** is running and has an active tab, then try again.",
+      "expected": [
+        "browser_get_current_url"
+      ]
+    },
+    {
+      "name": "Browser: Get Title",
+      "passed": false,
+      "time": 14.742012977600098,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "**Title:**  \n**ChatGPT**",
+      "expected": [
+        "browser_get_current_title"
+      ]
+    },
+    {
+      "name": "Browser: Google Search",
+      "passed": false,
+      "time": 26.418893814086914,
+      "tools_called": [
+        "namespace.functions.chrome_open_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "Sure! Just let me know what you\u2019d like to do.",
+      "expected": [
+        "browser_search"
+      ]
+    },
+    {
+      "name": "Browser: YouTube Search",
+      "passed": false,
+      "time": 30.3645281791687,
+      "tools_called": [
+        "open_application"
+      ],
+      "tool_results": [
+        true
+      ],
+      "response": "\u2705 Google Chrome opened.",
+      "expected": [
+        "browser_search"
+      ]
+    },
+    {
+      "name": "Browser: DuckDuckGo Search",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: GitHub Search",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Zoom In",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Zoom Out",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Zoom Reset",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Find on Page",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Bookmark",
+      "passed": false,
+      "time": 37.562395095825195,
+      "tools_called": [
+        "chrome_get_current_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I need the URL of the page you want to bookmark. Could you paste it or tell me the address?",
+      "expected": [
+        "browser_bookmark_page"
+      ]
+    },
+    {
+      "name": "Browser: Print",
+      "passed": false,
+      "time": 29.406482934951782,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m not sure which page you\u2019d like to print. Could you specify the browser or give the URL?",
+      "expected": [
+        "browser_print_page"
+      ]
+    },
+    {
+      "name": "Browser: Save Page",
+      "passed": false,
+      "time": 30.447211027145386,
+      "tools_called": [
+        "chrome_get_current_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I\u2019m ready to help! Just let me know what you\u2019d like to do next.",
+      "expected": [
+        "browser_save_page"
+      ]
+    },
+    {
+      "name": "Browser: Fullscreen",
+      "passed": false,
+      "time": 32.20432782173157,
+      "tools_called": [
+        "maximize_window"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "The requested action failed because **Google\u202fChrome** is not running.  \n\nPlease let me know what you\u2019d like to do next (e.g., open Chrome, resize a window, play music, etc.).",
+      "expected": [
+        "browser_fullscreen"
+      ]
+    },
+    {
+      "name": "Browser: Incognito",
+      "passed": false,
+      "time": 31.753514051437378,
+      "tools_called": [
+        "open_application"
+      ],
+      "tool_results": [
+        true
+      ],
+      "response": "\u2705 **Google Chrome** is now open.",
+      "expected": [
+        "browser_open_incognito"
+      ]
+    },
+    {
+      "name": "Browser: Dev Tools",
+      "passed": false,
+      "time": 48.39354991912842,
+      "tools_called": [
+        "chrome_open_url",
+        "open_application"
+      ],
+      "tool_results": [
+        false,
+        false
+      ],
+      "response": "Sure, just let me know what you need!",
+      "expected": [
+        "browser_open_devtools"
+      ]
+    },
+    {
+      "name": "Browser: View Source",
+      "passed": false,
+      "time": 15.045730113983154,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I need a bit more detail.  \nWhich browser (Safari, Chrome, etc.) and which page would you like the source for?",
+      "expected": [
+        "browser_view_source"
+      ]
+    },
+    {
+      "name": "Browser: Clear History",
+      "passed": false,
+      "time": 39.036845207214355,
+      "tools_called": [
+        "delete_file"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I couldn\u2019t find the file at the specified location. It appears that `~/Library/Safari/History.db` does not exist. If you need help locating a different Safari history file or another task, let me know",
+      "expected": [
+        "browser_clear_history"
+      ]
+    },
+    {
+      "name": "Browser: Screenshot",
+      "passed": false,
+      "time": 60,
+      "error": "Timeout",
+      "tools_called": []
+    },
+    {
+      "name": "Browser: Multiple URLs",
+      "passed": false,
+      "time": 36.24777412414551,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m ready to help!  \nWhat would you like to do next?",
+      "expected": [
+        "browser_open_multiple_urls",
+        "browser_new_tab"
+      ]
+    },
+    {
+      "name": "Browser: Safari Reading Mode",
+      "passed": false,
+      "time": 15.386465072631836,
+      "tools_called": [],
+      "tool_results": [],
+      "response": "I\u2019m sorry, but I don\u2019t have a direct tool to toggle Safari\u2019s Reading Mode. You can enable it manually by clicking the **Reader** button (the \u201caA\u201d icon) in the address bar or pressing **\u2325\u2318R** while Saf",
+      "expected": [
+        "browser_reading_mode"
+      ]
+    },
+    {
+      "name": "Chrome: Get URL",
+      "passed": false,
+      "time": 52.629424810409546,
+      "tools_called": [
+        "chrome_get_current_url",
+        "chrome_get_current_url"
+      ],
+      "tool_results": [
+        false,
+        false
+      ],
+      "response": "It seems there was an error while attempting to retrieve the current URL. If you need that information, let me know what you'd like to do next.",
+      "expected": [
+        "browser_get_current_url"
+      ]
+    },
+    {
+      "name": "Brave: Get URL",
+      "passed": false,
+      "time": 28.223273992538452,
+      "tools_called": [
+        "brave_get_current_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "I\u2019m sorry, but I couldn\u2019t find the requested tool.  \nPlease let me know what you\u2019d like to do next.",
+      "expected": [
+        "browser_get_current_url"
+      ]
+    },
+    {
+      "name": "Safari: Get URL",
+      "passed": false,
+      "time": 40.6848030090332,
+      "tools_called": [
+        "safari_get_current_url",
+        "safari_get_current_url"
+      ],
+      "tool_results": [
+        false,
+        false
+      ],
+      "response": "I\u2019m ready to help. Just let me know what you\u2019d like to do.",
+      "expected": [
+        "browser_get_current_url"
+      ]
+    },
+    {
+      "name": "Chrome: New Tab",
+      "passed": false,
+      "time": 26.246010065078735,
+      "tools_called": [
+        "namespace.chrome_open_url"
+      ],
+      "tool_results": [
+        false
+      ],
+      "response": "Sure thing! Just let me know what you\u2019d like to do.",
+      "expected": [
+        "browser_new_tab"
+      ]
+    },
+    {
+      "name": "Brave: New Tab",
+      "passed": false,
+      "time": 50.311744928359985,
+      "tools_called": [
+        "chrome_open_url",
+        "open_application"
+      ],
+      "tool_results": [
+        false,
+        false
+      ],
+      "response": "I\u2019m sorry, I didn\u2019t understand that request. Could you please clarify?",
+      "expected": [
+        "browser_new_tab"
+      ]
+    },
+    {
+      "name": "Safari: New Tab",
+      "passed": false,
+      "time": 50.42013120651245,
+      "tools_called": [
+        "open_application",
+        "play_spotify_track"
+      ],
+      "tool_results": [
+        true,
+        false
+      ],
+      "response": "I\u2019m sorry\u2014please give me the exact song title you\u2019d like to play on Spotify.",
+      "expected": [
+        "browser_new_tab"
+      ]
+    }
+  ]
+}
