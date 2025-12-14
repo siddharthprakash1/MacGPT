@@ -155,9 +155,13 @@ TOOL_ALIASES = {
     "battery_status": "get_battery_status",
     
     # Clipboard variations
-    "copy": "clipboard_get_history",
+    "clipboard": "clipboard_read",
+    "get_clipboard": "clipboard_read",
+    "read_clipboard": "clipboard_read",
+    "whats_on_clipboard": "clipboard_read",
+    "clipboard_content": "clipboard_read",
     "paste_history": "clipboard_get_history",
-    "clipboard": "clipboard_get_history",
+    "clipboard_history": "clipboard_get_history",
     "clear_clipboard": "clipboard_clear",
     
     # Notes/Reminders

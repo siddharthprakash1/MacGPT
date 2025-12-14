@@ -153,8 +153,8 @@ class OllamaClient:
             tool_calls = message_response.get('tool_calls', [])
             
             if tool_calls:
-                # Execute tool calls
-                tool_results = []
+                # Execute all tool calls and collect results
+                all_results = []
                 for tool_call in tool_calls:
                     function = tool_call.get('function', {})
                     tool_name = function.get('name')
@@ -164,28 +164,49 @@ class OllamaClient:
                     
                     # Execute the tool
                     tool_result = self.mcp_server.execute_tool(tool_name, tool_args)
-                    tool_results.append(tool_result)
-                    
-                    # Log to memory for learning patterns (skip memory tools to avoid recursion)
-                    if not tool_name.startswith('memory_'):
-                        try:
-                            memory = get_memory()
-                            original_message = self.conversation_history[-1].get('content', '') if self.conversation_history else ''
-                            memory.log_command(original_message, tool_name)
-                        except Exception:
-                            pass  # Don't fail on memory errors
+                    all_results.append({
+                        "tool": tool_name,
+                        "args": tool_args,
+                        "result": tool_result
+                    })
                 
-                # Add assistant's tool call to history
+                # Format results clearly for the model
+                results_text = "TOOL RESULTS:\n"
+                for r in all_results:
+                    results_text += f"- {r['tool']}: {json.dumps(r['result'])}\n"
+                
+                # Add assistant message acknowledging tool call
                 self.conversation_history.append(message_response)
                 
-                # Add tool results to history
+                # Add tool results as user message (models understand user messages better)
                 self.conversation_history.append({
-                    "role": "tool",
-                    "content": json.dumps(tool_results)
+                    "role": "user",
+                    "content": f"{results_text}\nBased on these results, give a brief response to what was done."
                 })
                 
-                # Get final response from model (recursive call)
-                return self.chat("", stream=stream)
+                # Make follow-up call WITHOUT tools to force text response
+                followup_payload = {
+                    "model": self.model,
+                    "messages": self.conversation_history,
+                    "stream": stream,
+                    "options": {"temperature": self.temperature},
+                    "keep_alive": "10m"
+                    # NO TOOLS - forces text response
+                }
+                
+                followup_response = self.session.post(
+                    f"{self.endpoint}/api/chat",
+                    json=followup_payload,
+                    timeout=120
+                )
+                followup_response.raise_for_status()
+                followup_result = followup_response.json()
+                
+                # Add final response to history
+                final_message = followup_result.get('message', {})
+                self.conversation_history.append(final_message)
+                
+                return followup_result
             
             else:
                 # Regular response without tool calls
@@ -210,53 +231,24 @@ class OllamaClient:
 
 
 # Base system prompt - guides LLM on tool usage
-BASE_SYSTEM_PROMPT = """You are MacGPT, a macOS assistant with system tools and persistent memory.
+BASE_SYSTEM_PROMPT = """You are MacGPT, a macOS assistant with tools to control the Mac.
 
-CRITICAL RULES - FOLLOW EXACTLY:
-1. EXECUTE tools - DO NOT describe or list them as JSON. Call them directly.
-2. Tool names are simple like "get_network_info" NOT "functions.get_network_info"
-3. NEVER output JSON tool descriptions - actually invoke the tools
-4. When user asks multiple things, call ALL relevant tools in sequence
-5. Use exact parameter names from tool schemas
+CRITICAL: You MUST call tools to perform actions. NEVER pretend or say you did something without calling a tool.
 
-KEY TOOLS & PARAMETERS:
-- open_application(app_name="Safari") - launch apps
-- create_directory(directory="~/path") - create folders  
-- quick_find_file(filename="...") - find files
-- spotify_resume() / spotify_pause() - control music
-- browser_new_tab(url="https://...") - open browser tabs
-- browser_search(query="...", engine="google") - web search
-- set_volume(volume=50) - set system volume 0-100
-- run_shell_command(command="...") - run terminal commands
+TOOLS YOU MUST USE:
+- play_spotify_track(query="song name") - play a song on Spotify
+- spotify_play_artist(artist_name="...") - play artist on Spotify
+- spotify_pause() - pause music
+- spotify_resume() - resume music
+- clipboard_read() - read clipboard (no parameters needed)
+- open_application(app_name="...") - open apps
+- browser_search(query="...") - search the web
+- set_volume(volume=50) - change volume
 
-NETWORK TOOLS (use these for network requests):
-- get_network_info() - WiFi status, SSID, IP address
-- get_ip_info() - public IP and geolocation
-- test_download_speed() - internet speed test
-- ping_host(host="google.com") - ping a host
-- check_website_status(url="https://github.com") - check if site is up
-- dns_lookup(domain="example.com") - DNS lookup
-- traceroute(host="8.8.8.8") - network trace
-
-FILE SEARCH TOOLS (FAST - use instead of shell find):
-- find_large_files() - find files >100MB (instant)
-- find_files_by_date(date_range="today") - recent files
-- find_apps_using_disk_space() - apps sorted by size
-- spotlight_natural_search(query="large videos") - natural language search
-
-MEMORY TOOLS (remember things across sessions):
-- memory_remember(fact="...") - remember a fact about the user
-- memory_recall() - recall what you know
-- memory_set_preference(key="browser", value="chrome") - save preferences
-- memory_create_shortcut(name="dev", command="...") - create shortcuts
-- memory_run_shortcut(name="dev") - run a saved shortcut
-
-ALWAYS:
-- Use the EXACT parameter names shown above
-- Keep responses brief with markdown formatting
-- Execute actions immediately when asked
-- Use memory to personalize responses
-- When user asks multiple questions, call ALL relevant tools"""
+RULES:
+1. ALWAYS call a tool for any action request
+2. NEVER say "I've done X" without actually calling the tool
+3. After the tool runs, explain the result"""
 
 
 def get_system_prompt_with_memory() -> str:
